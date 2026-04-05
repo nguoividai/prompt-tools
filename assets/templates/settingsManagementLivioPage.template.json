@@ -1,0 +1,136 @@
+{
+  "settingsManagementPage": {
+    "key": "settingsManagementPage",
+    "type": "page",
+    "name": "settingsManagementLivioPage",
+    "file": "_template/settingsManagementPage.template.tsx",
+    "description": "React + TypeScript settings CRUD management page — single-component pattern with 6 sections: header (title + Add button) · filter bar (Input.Search + SelectFilter status) · table (TablePaging with header-level bulk Switch + row-level Switch, ColumnsType<T>[]) · create/edit modal (AntD Form with date-range validator, TextArea, Checkbox isActive) · delete confirm modal · bulk-update confirm modal. Replace every @@REPLACE@@ (PascalCase) and @@replace@@ (camelCase) with entity name.",
+    "slots": [
+      "header (page title h3 + Button Add with PlusOutlined)",
+      "filter bar (Input.Search · SelectFilter isActiveOnly/all toggle)",
+      "table (TablePaging · header Switch for bulk activate/deactivate → confirmation modal · row Switch per record · Edit+Delete action buttons)",
+      "create/edit modal (Form layout=vertical: name · startDate · endDate with isBefore validator · description TextArea · isActive Checkbox)",
+      "delete confirm modal (dangerouslySetInnerHTML warning + okButtonProps color=red)",
+      "bulk-update confirm modal (triggered by header Switch change)"
+    ],
+    "components": [
+      "Button",
+      "Checkbox",
+      "DatePicker",
+      "Form",
+      "Form.Item",
+      "Input",
+      "Input.Search",
+      "Input.TextArea",
+      "InputNumber",
+      "message",
+      "Modal",
+      "Switch",
+      "TablePaging",
+      "SelectFilter",
+      "DeleteOutlined",
+      "EditOutlined",
+      "PlusOutlined"
+    ],
+    "hooks": [
+      "useState",
+      "useCallback",
+      "useMemo",
+      "useTranslation",
+      "usePaging",
+      "useDialog"
+    ],
+    "useCases": ["@@replace@@UseCase"],
+    "replacePattern": "@@REPLACE@@",
+    "replacePatternCamel": "@@replace@@",
+    "hint": "1) Find-replace @@REPLACE@@ with PascalCase entity name (e.g. ConstructionGrade). 2) Find-replace @@replace@@ with camelCase entity name (e.g. constructionGrade). 3) Update columns array with entity-specific fields. 4) Update Form.Item fields inside create/edit modal to match domain model. 5) Add i18n keys for the new entity (see i18nKeys list). 6) Create @@replace@@.use-case.ts and @@replace@@ model types. 7) Register the page route in PAGE_URL and App.tsx.",
+    "i18nKeys": {
+      "entity": [
+        "@@replace@@.title",
+        "@@replace@@.search",
+        "@@replace@@.activeOnly",
+        "@@replace@@.all",
+        "@@replace@@.active",
+        "@@replace@@.name",
+        "@@replace@@.startDate",
+        "@@replace@@.endDate",
+        "@@replace@@.description",
+        "@@replace@@.descriptionPlaceholder",
+        "@@replace@@.create",
+        "@@replace@@.update",
+        "@@replace@@.deleteTitle",
+        "@@replace@@.updateTitle",
+        "@@replace@@.createSuccess",
+        "@@replace@@.updateSuccess",
+        "@@replace@@.deleteSuccess",
+        "@@replace@@.confirmAllUpdate"
+      ],
+      "common": [
+        "common.addNew",
+        "common.save",
+        "common.cancel",
+        "common.confirm",
+        "common.activate",
+        "common.inactivate",
+        "common.activateSuccess",
+        "common.deactivateSuccess",
+        "common.activateAllSuccess",
+        "common.errorToast",
+        "common.warningDelete",
+        "common.expiryDateMustBeAfterStartDate"
+      ]
+    },
+    "columnSchema": {
+      "name": "ColumnType<T>",
+      "description": "Ant Design ColumnsType<T> column definition passed to TablePaging. The isActive and action columns are required by this template; add entity-specific columns between them.",
+      "properties": {
+        "title": {
+          "type": "string | ReactNode",
+          "required": true,
+          "description": "Column header text or JSX element. The isActive column uses a <div> with a bulk Switch + label."
+        },
+        "dataIndex": {
+          "type": "string",
+          "required": true,
+          "description": "Key mapping to a field on the record type T."
+        },
+        "key": {
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier for the column; usually matches dataIndex."
+        },
+        "width": {
+          "type": "number | string",
+          "required": false,
+          "description": "Column width in pixels. Recommended: 150 for short text, 200 for medium, 100 for action column."
+        },
+        "render": {
+          "type": "(value, record, index) => ReactNode",
+          "required": false,
+          "description": "Custom cell renderer. Used for date formatting (getDateTime), Switch toggle, and action buttons."
+        },
+        "sorter": {
+          "type": "(a: T, b: T) => number",
+          "required": false,
+          "description": "Comparator for client-side sort. Example: (a, b) => a.name.localeCompare(b.name)."
+        },
+        "ellipsis": {
+          "type": "boolean",
+          "required": false,
+          "description": "Truncate overflowing text and show tooltip. Use for description/basis columns."
+        }
+      },
+      "fixedColumns": {
+        "isActive": {
+          "description": "Always present. Header contains a bulk Switch (handleHeaderSwitchChange + isAllActive checked). Cell renders a row-level Switch (onChangeSwitch).",
+          "width": 200
+        },
+        "action": {
+          "description": "Always present as last column. Renders EditOutlined (opens create/edit modal with form.setFieldsValue) and DeleteOutlined (opens delete confirm modal) buttons.",
+          "width": 100
+        }
+      }
+    },
+    "content": "// ── Replace @@REPLACE@@ (PascalCase) & @@replace@@ (camelCase) with entity name ──\n// Copy to: src/pages/settings/@@REPLACE@@.tsx\n// Sections: 1·header 2·filter-bar 3·table 4·create-edit-modal 5·delete-modal 6·bulk-update-modal\n\nimport { Button, Checkbox, Form, Input, InputNumber, message, Modal, DatePicker, Switch } from 'antd';\nimport { useCallback, useMemo, useState } from 'react';\nimport { useTranslation } from 'react-i18next';\nimport { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';\nimport { @@replace@@UseCase } from '@/domain/use-cases/@@replace@@.use-case';\nimport usePaging from '@/presenters/components/core/table/hooks/use-paging';\nimport { useDialog } from '@/domain/hooks/use-dialog';\nimport {\n  @@REPLACE@@,\n  @@REPLACE@@Filter,\n  @@REPLACE@@Payload,\n} from '@/domain/models/@@replace@@';\nimport SelectFilter from '@/presenters/components/common/SelectFilter';\nimport type { ColumnsType } from 'antd/es/table';\nimport TablePaging from '@/presenters/components/core/table';\nimport dayjs from 'dayjs';\nimport { FORMAT_DATE_DEFAULT } from '@/configs';\nimport { getDateTime } from '@/utils';\n\nconst @@REPLACE@@Management = () => {\n  const { t } = useTranslation();\n  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);\n  const [loadingBtn, setLoadingBtn] = useState(false);\n  const { open, selected, onClose, onShow } = useDialog<@@REPLACE@@>();\n  const [search, setSearch] = useState<string>('');\n  const [isAllActive, setIsAllActive] = useState(false);\n  const [headerSwitchModalVisible, setHeaderSwitchModalVisible] = useState(false);\n  const [headerSwitchValue, setHeaderSwitchValue] = useState(false);\n  const [headerSwitchLoading, setHeaderSwitchLoading] = useState(false);\n  const {\n    open: openDelete,\n    selected: selectedDelete,\n    onClose: onCloseDelete,\n    onShow: onShowDelete,\n  } = useDialog<@@REPLACE@@>();\n  const [form] = Form.useForm();\n\n  // SECTION 1 · Row-level isActive toggle\n  const onChangeSwitch = async (record: @@REPLACE@@, isActive: boolean) => {\n    try {\n      setLoadingBtn(true);\n      await @@replace@@UseCase.update({ ...record, isActive: !isActive });\n      message.success(isActive ? t('common.deactivateSuccess') : t('common.activateSuccess'));\n      handleReloadCurrentOffset();\n    } catch (error: any) {\n      console.error('Error updating status:', error);\n      message.error(error?.message ?? t('common.errorToast'));\n    } finally {\n      setLoadingBtn(false);\n    }\n  };\n\n  // SECTION 2 · Header-level bulk toggle (queues confirmation modal)\n  const handleHeaderSwitchChange = useCallback((checked: boolean) => {\n    setHeaderSwitchValue(checked);\n    setHeaderSwitchModalVisible(true);\n  }, []);\n\n  const handleConfirmHeaderSwitch = async () => {\n    try {\n      setHeaderSwitchLoading(true);\n      await @@replace@@UseCase.updateAll(!isAllActive);\n      message.success(t('common.activateAllSuccess'));\n      handleReloadCurrentOffset();\n    } catch (error: any) {\n      console.error('Error updating all:', error);\n      message.error(error?.message ?? t('common.errorToast'));\n    } finally {\n      setHeaderSwitchLoading(false);\n      setHeaderSwitchModalVisible(false);\n    }\n  };\n\n  // SECTION 3 · Columns — keep isActive + action columns; replace TODO block with entity fields\n  const columns = useMemo<ColumnsType<@@REPLACE@@>>(\n    () => [\n      {\n        title: t('@@replace@@.name'),\n        dataIndex: 'name',\n        key: 'name',\n        width: 150,\n        sorter: (a, b) => a.name.localeCompare(b.name),\n      },\n      // TODO: add entity-specific columns here\n      {\n        title: t('@@replace@@.startDate'),\n        dataIndex: 'startDate',\n        key: 'startDate',\n        width: 150,\n        render: (startDate: string) => getDateTime(startDate, FORMAT_DATE_DEFAULT),\n      },\n      {\n        title: t('@@replace@@.endDate'),\n        dataIndex: 'endDate',\n        key: 'endDate',\n        width: 150,\n        render: (endDate: string) => getDateTime(endDate, FORMAT_DATE_DEFAULT),\n      },\n      {\n        title: (\n          <div className='flex items-center gap-2'>\n            <Switch onChange={handleHeaderSwitchChange} checked={isAllActive} />\n            <span>{t('@@replace@@.active')}</span>\n          </div>\n        ),\n        dataIndex: 'isActive',\n        key: 'isActive',\n        width: 200,\n        render: (isActive: boolean, record) => (\n          <Switch checked={isActive} onChange={() => onChangeSwitch(record, isActive)} />\n        ),\n      },\n      {\n        title: '',\n        dataIndex: 'action',\n        key: 'action',\n        width: 100,\n        render: (_: string, record: @@REPLACE@@) => (\n          <div className='flex gap-[8px] justify-end'>\n            <Button\n              type='text'\n              icon={<EditOutlined />}\n              onClick={() => {\n                onShow(record);\n                form.setFieldsValue({\n                  ...record,\n                  startDate: record.startDate ? dayjs(record.startDate) : null,\n                  endDate: record.endDate ? dayjs(record.endDate) : null,\n                });\n              }}\n            />\n            <Button type='text' icon={<DeleteOutlined />} onClick={() => onShowDelete(record)} />\n          </div>\n        ),\n      },\n    ],\n    [t, isAllActive, handleHeaderSwitchChange],\n  );\n\n  // SECTION 4 · Fetch — setIsAllActive from metadata\n  const fetchData = useCallback(async (params?: @@REPLACE@@Filter) => {\n    try {\n      const response = await @@replace@@UseCase.getList({\n        ...params,\n        isActiveOnly: typeof params?.isActiveOnly === 'undefined' ? true : params.isActiveOnly === 'true',\n      });\n      setIsAllActive(response.data?.metadata?.isAllActive || false);\n      return {\n        list: response.data?.items || [],\n        total: response.data?.items?.length || 0,\n      };\n    } catch (error) {\n      console.error('Error fetching data:', error);\n      return { list: [], total: 0 };\n    }\n  }, []);\n\n  const { dataSource, total, handleFilterChange, handleReloadCurrentOffset, isLoading } = usePaging({\n    getDataOffset: fetchData,\n    idKey: 'id',\n    initState: { filter: { isActiveOnly: undefined, searchText: search } },\n    defaultPageIndex: 0,\n  });\n\n  const keyRender = useMemo(() => JSON.stringify([total, isAllActive]), [total, isAllActive]);\n\n  // SECTION 5 · Create / Update\n  const onFinish = async (values: @@REPLACE@@Payload) => {\n    try {\n      setLoadingBtn(true);\n      if (selected) {\n        await @@replace@@UseCase.update({ ...values, id: selected.id });\n        message.success(t('@@replace@@.updateSuccess'));\n      } else {\n        await @@replace@@UseCase.create({ ...values, seqOrder: dataSource[dataSource.length - 1]?.seqOrder || 0 });\n        message.success(t('@@replace@@.createSuccess'));\n      }\n      onClose();\n      handleReloadCurrentOffset();\n      form.resetFields();\n    } catch (error: any) {\n      console.error('Error saving:', error);\n      message.error(error?.message ?? t('common.errorToast'));\n    } finally {\n      setLoadingBtn(false);\n    }\n  };\n\n  // SECTION 6 · Delete\n  const onDelete = async () => {\n    try {\n      if (!selectedDelete) return;\n      setLoadingBtn(true);\n      await @@replace@@UseCase.delete(selectedDelete?.id);\n      message.success(t('@@replace@@.deleteSuccess'));\n      onCloseDelete();\n      handleReloadCurrentOffset();\n    } catch (error: any) {\n      console.error('Error deleting:', error);\n      message.error(error?.message ?? t('common.errorToast'));\n    } finally {\n      setLoadingBtn(false);\n    }\n  };\n\n  return (\n    <div className='px-4'>\n      {/* SLOT 1 · Header */}\n      <div className='-mx-[12px]'>\n        <div className='flex items-center justify-between px-3 py-3'>\n          <h3 className='text-heading-03 font-heading-03 text-on-surface-strong'>{t('@@replace@@.title')}</h3>\n          <Button\n            color='default'\n            variant='solid'\n            icon={<PlusOutlined className='anticon-plus' />}\n            onClick={() => { form.setFieldsValue({ isActive: true }); onShow(); }}\n          >\n            {t('common.addNew')}\n          </Button>\n        </div>\n      </div>\n\n      <div className='container'>\n        {/* SLOT 2 · Filter bar */}\n        <div className='flex items-center gap-2 mb-4'>\n          <Input.Search\n            placeholder={t('@@replace@@.search')}\n            allowClear\n            value={search}\n            onChange={(e) => setSearch(e.target.value)}\n            style={{ maxWidth: 400 }}\n            onSearch={(value) => handleFilterChange({ searchText: value, isActiveOnly: selectedStatus?.[0] })}\n            onKeyDown={(e) => {\n              if (e.key === 'Enter') {\n                handleFilterChange({ searchText: (e.target as HTMLInputElement).value, isActiveOnly: selectedStatus?.[0] });\n              }\n            }}\n          />\n          <SelectFilter\n            label={!selectedStatus?.length ? t('@@replace@@.activeOnly') : ''}\n            selected={selectedStatus ? [selectedStatus.toString()] : []}\n            options={[\n              { value: true, label: t('@@replace@@.activeOnly') },\n              { value: false, label: t('@@replace@@.all') },\n            ]}\n            isMulti={false}\n            allowClear\n            onFilter={(value) => {\n              handleFilterChange({ searchText: search, isActiveOnly: value?.[0] });\n              setSelectedStatus(value);\n            }}\n          />\n        </div>\n\n        {/* SLOT 3 · Table */}\n        <div>\n          <TablePaging\n            key={keyRender}\n            scroll={{ x: 'max-content' }}\n            disabledPaging\n            columns={columns as any[]}\n            tableClassName='custom-table border border-solid border-[#E0E0E0]'\n            rowKey='id'\n            dataSource={dataSource}\n            isLoading={isLoading}\n          />\n        </div>\n      </div>\n\n      {/* SLOT 4 · Create/Edit Modal */}\n      <Modal\n        title={\n          <span className='font-roboto font-bold text-[20px] leading-6 tracking-normal align-middle'>\n            {selected?.id ? t('@@replace@@.update') : t('@@replace@@.create')}\n          </span>\n        }\n        closable={{ 'aria-label': 'Custom Close Button' }}\n        open={open}\n        onCancel={onClose}\n        footer={null}\n      >\n        <Form form={form} className='mt-4' layout='vertical' onFinish={onFinish}>\n          {/* TODO: replace form fields below with entity-specific fields */}\n          <div className='flex gap-4'>\n            <Form.Item\n              label={t('@@replace@@.name')}\n              name='name'\n              rules={[{ required: true }, { max: 255 }]}\n              className='w-1/2'\n            >\n              <Input placeholder={t('@@replace@@.name')} maxLength={255} />\n            </Form.Item>\n          </div>\n\n          <div className='flex gap-4'>\n            <Form.Item\n              label={t('@@replace@@.startDate')}\n              name='startDate'\n              className='w-1/2'\n              rules={[{ required: true }]}\n            >\n              <DatePicker className='w-full' format={FORMAT_DATE_DEFAULT} />\n            </Form.Item>\n\n            <Form.Item\n              label={t('@@replace@@.endDate')}\n              name='endDate'\n              className='w-1/2'\n              rules={[{\n                validator: (_, value) => {\n                  const startDate = form.getFieldValue('startDate');\n                  if (!value || !startDate) return Promise.resolve();\n                  if (value.isBefore(startDate, 'day'))\n                    return Promise.reject(t('common.expiryDateMustBeAfterStartDate'));\n                  return Promise.resolve();\n                },\n              }]}\n            >\n              <DatePicker className='w-full' format={FORMAT_DATE_DEFAULT} />\n            </Form.Item>\n          </div>\n\n          <Form.Item\n            label={t('@@replace@@.description')}\n            name='description'\n            rules={[{ required: true }, { max: 1000 }]}\n          >\n            <Input.TextArea rows={4} placeholder={t('@@replace@@.descriptionPlaceholder')} maxLength={1000} />\n          </Form.Item>\n\n          <Form.Item name='isActive' valuePropName='checked' initialValue={true}>\n            <Checkbox>{t('common.activate')}</Checkbox>\n          </Form.Item>\n\n          <div className='flex justify-end gap-2 mt-[40px]'>\n            <Button className='min-w-[80px] bg-[#EFEFEF] rounded-[4px]' disabled={loadingBtn} onClick={onClose}>\n              {t('common.cancel')}\n            </Button>\n            <Button color='default' variant='solid' className='min-w-[80px]' loading={loadingBtn} htmlType='submit'>\n              {!selected?.id ? t('common.addNew') : t('common.save')}\n            </Button>\n          </div>\n        </Form>\n      </Modal>\n\n      {/* SLOT 5 · Delete Confirm Modal */}\n      <Modal\n        title={t('@@replace@@.deleteTitle')}\n        closable={{ 'aria-label': 'Custom Close Button' }}\n        open={openDelete}\n        onCancel={onCloseDelete}\n        onOk={onDelete}\n        okButtonProps={{ loading: loadingBtn, color: 'red', variant: 'solid', style: { minWidth: 80 } }}\n        cancelButtonProps={{ disabled: loadingBtn, style: { minWidth: 80, backgroundColor: '#EFEFEF' } }}\n        okText={t('common.confirm')}\n        cancelText={t('common.cancel')}\n      >\n        <p dangerouslySetInnerHTML={{ __html: t('common.warningDelete', { name: selectedDelete?.name }) }} />\n      </Modal>\n\n      {/* SLOT 6 · Bulk Update Confirm Modal */}\n      <Modal\n        title={t('@@replace@@.updateTitle')}\n        open={headerSwitchModalVisible}\n        onCancel={() => setHeaderSwitchModalVisible(false)}\n        onOk={handleConfirmHeaderSwitch}\n        okButtonProps={{ loading: headerSwitchLoading, style: { minWidth: 80 }, variant: 'solid', color: 'default' }}\n        cancelButtonProps={{ disabled: headerSwitchLoading, style: { minWidth: 80, backgroundColor: '#EFEFEF' } }}\n        okText={t('common.confirm')}\n        cancelText={t('common.cancel')}\n      >\n        <p>\n          {t('@@replace@@.confirmAllUpdate', {\n            value: headerSwitchValue ? t('common.activate') : t('common.inactivate'),\n          })}\n        </p>\n      </Modal>\n    </div>\n  );\n};\n\nexport default @@REPLACE@@Management;"
+  }
+}
