@@ -1955,6 +1955,184 @@
         margin-right: auto;
       }
 
+      /* ── Framework pane ── */
+      .fw-pane-layout {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+      }
+      .fw-pane-topbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        background: var(--s2);
+        border-bottom: 1px solid var(--b1);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+      }
+      .fw-pane-topbar-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--tx);
+        font-family: var(--mono);
+      }
+      .fw-pane-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .fw-pane-scroll::-webkit-scrollbar { width: 6px; }
+      .fw-pane-scroll::-webkit-scrollbar-track { background: transparent; }
+      .fw-pane-scroll::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 3px; }
+      .fw-selector-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 14px;
+        background: var(--s1);
+        border: 1px solid var(--b1);
+        border-radius: var(--r2);
+      }
+      .fw-selector-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--tx3);
+        font-family: var(--mono);
+        margin-bottom: 4px;
+      }
+      .fw-section {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .fw-section-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2px;
+      }
+      .fw-section-title {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--tx3);
+        font-family: var(--mono);
+      }
+      .fw-stack-grid { display: flex; flex-direction: column; gap: 2px; }
+      .fw-stack-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: var(--r);
+        border: 1px solid transparent;
+        transition: border-color 0.12s, background 0.12s;
+      }
+      .fw-stack-row:hover { background: var(--s2); border-color: var(--b1); }
+      .fw-stack-row.fw-enabled { background: var(--ac3); border-color: rgba(0,212,168,0.18); }
+      .fw-stack-toggle {
+        position: relative;
+        width: 28px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      .fw-stack-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+      .fw-stack-toggle .slider {
+        position: absolute;
+        inset: 0;
+        background: var(--b2);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .fw-stack-toggle .slider::before {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        left: 3px;
+        top: 3px;
+        background: var(--tx2);
+        border-radius: 50%;
+        transition: 0.2s;
+      }
+      .fw-stack-toggle input:checked + .slider { background: var(--ac); }
+      .fw-stack-toggle input:checked + .slider::before { transform: translateX(12px); background: #fff; }
+      .fw-stack-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+      .fw-stack-info { flex: 1; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+      .fw-stack-name { font-size: 12px; font-weight: 600; color: var(--tx); font-family: var(--mono); }
+      .fw-stack-desc { font-size: 10px; color: var(--tx3); line-height: 1.4; }
+      .fw-stack-version-input {
+        font-size: 10px;
+        font-family: var(--mono);
+        color: var(--tx2);
+        background: var(--s2);
+        border: 1px solid var(--b2);
+        border-radius: 4px;
+        padding: 2px 7px;
+        outline: none;
+        width: 72px;
+        flex-shrink: 0;
+        transition: border-color 0.15s;
+      }
+      .fw-stack-version-input:focus { border-color: var(--ac); color: var(--tx); }
+      .fw-stack-version-input::placeholder { color: var(--tx3); }
+      .fw-stack-del-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        color: var(--tx3);
+        font-size: 14px;
+        line-height: 1;
+        transition: 0.12s;
+        flex-shrink: 0;
+      }
+      .fw-stack-del-btn:hover { border-color: rgba(255,85,85,0.3); color: var(--err); background: rgba(255,85,85,0.07); }
+      .fw-add-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px 2px;
+      }
+      .fw-add-input {
+        flex: 1;
+        background: var(--s2);
+        border: 1px solid var(--b2);
+        border-radius: var(--r);
+        color: var(--tx);
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 5px 9px;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .fw-add-input:focus { border-color: var(--ac); }
+      .fw-add-input::placeholder { color: var(--tx3); }
+      .fw-pane-footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-top: 1px solid var(--b1);
+        background: var(--s1);
+        flex-shrink: 0;
+      }
+      .fw-pane-footer-info { font-size: 10px; font-family: var(--mono); color: var(--tx3); margin-right: auto; }
+
       /* ── JL Design pane ── */
       .jl-layout {
         display: flex;
@@ -2466,6 +2644,258 @@
         color: var(--tx3);
         text-align: center;
         margin-top: 2px;
+      }
+
+      /* ── Master Agent (Orchestrator) card ── */
+      .master-agent-card {
+        border: 1.5px solid rgba(255, 179, 71, 0.45);
+        border-radius: var(--r2);
+        background: rgba(255, 179, 71, 0.04);
+        overflow: hidden;
+        transition: border-color 0.15s;
+      }
+      .master-agent-card:hover {
+        border-color: rgba(255, 179, 71, 0.65);
+      }
+      .master-agent-banner {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 4px 14px;
+        background: rgba(255, 179, 71, 0.1);
+        border-bottom: 1px solid rgba(255, 179, 71, 0.2);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--warn);
+        font-family: var(--mono);
+      }
+      .master-agent-banner::before {
+        content: "◈";
+        font-size: 10px;
+      }
+      .master-agent-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        cursor: pointer;
+        user-select: none;
+        background: rgba(255, 179, 71, 0.04);
+        transition: background-color 0.15s;
+      }
+      .master-agent-header:hover {
+        background: rgba(255, 179, 71, 0.08);
+      }
+      .master-agent-role {
+        font-size: 10px;
+        color: var(--warn);
+        background: rgba(255, 179, 71, 0.12);
+        border: 1px solid rgba(255, 179, 71, 0.25);
+        border-radius: 4px;
+        padding: 2px 7px;
+        white-space: nowrap;
+      }
+      .master-agent-body {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        border-top: 1px solid rgba(255, 179, 71, 0.18);
+      }
+      .master-agent-body > div {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .master-select {
+        flex: 1;
+        background: var(--s2);
+        border: 1px solid rgba(255, 179, 71, 0.3);
+        border-radius: var(--r);
+        color: var(--tx);
+        font-family: inherit;
+        font-size: 12px;
+        padding: 7px 30px 7px 10px;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        transition: border-color 0.15s;
+      }
+      .master-select:focus {
+        border-color: var(--warn);
+      }
+      /* ── Sub-agents section header ── */
+      .subagent-section-hdr {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 2px;
+      }
+      .subagent-section-title {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+        color: var(--tx3);
+        font-family: var(--mono);
+      }
+      .subagent-section-line {
+        flex: 1;
+        height: 1px;
+        background: var(--b1);
+      }
+      .subagent-section-badge {
+        font-size: 9px;
+        font-family: var(--mono);
+        padding: 2px 7px;
+        border-radius: 10px;
+        background: var(--s2);
+        color: var(--tx3);
+        border: 1px solid var(--b1);
+      }
+      /* Task badge on collapsed sub-agent */
+      .agent-task-badge {
+        font-size: 9px;
+        font-family: var(--mono);
+        padding: 2px 7px;
+        border-radius: 10px;
+        background: var(--s2);
+        color: var(--ac);
+        border: 1px solid rgba(0, 212, 168, 0.2);
+        white-space: nowrap;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      /* Pipeline flow hint */
+      .pipeline-flow-hint {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: var(--s2);
+        border: 1px solid var(--b1);
+        border-radius: var(--r);
+        font-size: 10px;
+        font-family: var(--mono);
+        color: var(--tx3);
+        flex-wrap: wrap;
+      }
+      .pipeline-flow-node {
+        color: var(--tx2);
+        font-weight: 600;
+      }
+      .pipeline-flow-arrow {
+        color: var(--ac);
+        font-size: 11px;
+      }
+      /* Sub-agent task name input */
+      .agent-task-input {
+        width: 100%;
+        background: var(--s2);
+        border: 1px solid rgba(0, 212, 168, 0.25);
+        border-radius: var(--r);
+        color: var(--tx);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 7px 10px;
+        outline: none;
+        box-sizing: border-box;
+        transition: border-color 0.15s;
+      }
+      .agent-task-input:focus {
+        border-color: var(--ac);
+        background: var(--bg);
+      }
+      .agent-task-input::placeholder {
+        color: var(--tx3);
+        font-weight: 400;
+      }
+
+      /* ── Settings pane ── */
+      .stg-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        height: 100%;
+        box-sizing: border-box;
+        overflow-y: auto;
+      }
+      .stg-layout::-webkit-scrollbar { width: 6px; }
+      .stg-layout::-webkit-scrollbar-track { background: transparent; }
+      .stg-layout::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 3px; }
+      .stg-header-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--tx);
+        margin-bottom: 4px;
+      }
+      .stg-header-sub {
+        font-size: 12px;
+        color: var(--tx2);
+        line-height: 1.6;
+      }
+      .stg-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+      }
+      .stg-card {
+        background: var(--s2);
+        border: 1px solid var(--b1);
+        border-radius: var(--r);
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        transition: border-color 0.15s;
+      }
+      .stg-card.stg-filled {
+        border-color: var(--ac);
+        background: var(--ac-strong, rgba(0,212,168,0.06));
+      }
+      .stg-card-icon { font-size: 16px; margin-bottom: 4px; }
+      .stg-card-val {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--tx);
+        font-family: var(--mono);
+        line-height: 1;
+      }
+      .stg-card-lbl {
+        font-size: 10px;
+        color: var(--tx3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-top: 2px;
+      }
+      .stg-card-detail {
+        font-size: 11px;
+        color: var(--tx2);
+        margin-top: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .stg-section-title {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--tx3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+      .stg-divider {
+        border: none;
+        border-top: 1px solid var(--b1);
+        margin: 0;
       }
 
       /* ── Business pane ── */
@@ -3006,6 +3436,9 @@
             <div class="tab" onclick="switchTab('connector', this)">
               Connectors
             </div>
+            <div class="tab" onclick="switchTab('framework', this)">
+              Framework
+            </div>
             <div class="tab" onclick="switchTab('jldesign', this)">
               JL Design
             </div>
@@ -3016,7 +3449,7 @@
               Codebase
             </div>
             <div class="tab" onclick="switchTab('personality', this)">
-              Personality
+              Agents
             </div>
             <div class="tab" onclick="switchTab('business', this)">
               Business
@@ -3025,6 +3458,7 @@
               Agent Prompt
             </div>
             <div class="tab" onclick="switchTab('summary', this)">Summary</div>
+            <div class="tab" onclick="switchTab('settings', this)">Settings</div>
             <div class="tab" onclick="switchTab('preview', this)">Preview</div>
           </div>
 
@@ -3154,6 +3588,11 @@
               </div>
             </div>
 
+            <!-- Framework pane -->
+            <div class="pane" id="pane-framework">
+              <div class="fw-pane-layout" id="framework-out"></div>
+            </div>
+
             <!-- Template pane -->
             <div class="pane" id="pane-template">
               <div class="tmpl-layout" id="template-out">
@@ -3240,10 +3679,66 @@
                 <div class="jl-grid"></div>
               </div>
             </div>
+            <!-- Settings pane -->
+            <div class="pane" id="pane-settings">
+              <div class="stg-layout">
+                <!-- Header -->
+                <div>
+                  <div class="stg-header-title">Onboarding Export</div>
+                  <div class="stg-header-sub">Export your full configuration as a single JSON file — agents, framework, connectors &amp; templates — so any team member can import it and start immediately.</div>
+                </div>
+
+                <!-- Summary cards -->
+                <div>
+                  <div class="stg-section-title">What's included</div>
+                  <div class="stg-cards" id="stg-cards"></div>
+                </div>
+
+                <hr class="stg-divider" />
+
+                <!-- Export -->
+                <div>
+                  <div class="stg-section-title">Export</div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="btn btn-primary" id="btn-save-mcp" onclick="saveConfigForMCP()">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      Download Config
+                    </button>
+                    <button class="btn btn-ghost" id="btn-copy-config" onclick="copyConfigToClipboard(this)">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      Copy JSON
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Import -->
+                <div>
+                  <div class="stg-section-title">Import</div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                    <button class="btn btn-ghost" id="btn-import-config" onclick="openConfigFilePicker()">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      Load File
+                    </button>
+                    <button class="btn btn-ghost" onclick="applyConfigFromTextarea()">Apply pasted JSON</button>
+                    <input type="file" id="config-file-input" accept=".json" style="display:none" onchange="importConfigFromFile(event)" />
+                  </div>
+                </div>
+
+                <!-- JSON preview -->
+                <div style="display:flex;flex-direction:column;flex:1;min-height:180px">
+                  <div class="stg-section-title" style="display:flex;align-items:center;justify-content:space-between">
+                    <span>JSON Preview</span>
+                    <span style="font-size:10px;color:var(--tx3);font-family:var(--mono)" id="stg-json-size"></span>
+                  </div>
+                  <textarea id="settings-json" style="flex:1;width:100%;background:var(--s2);border:1px solid var(--b2);color:var(--tx);padding:12px;border-radius:8px;font-family:var(--mono);font-size:11px;resize:vertical;box-sizing:border-box;min-height:180px"></textarea>
+                </div>
+              </div>
+            </div>
           </div>
 
           <footer class="foot">
             <span class="foot-info" id="foot-info">–</span>
+            <span id="save-status" style="font-family:var(--mono);font-size:10px;color:var(--tx3);flex-shrink:0;margin-right:8px">–</span>
             <!-- <button class="foot-btn" id="btn-copy-json" onclick="copyJSON()">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               Copy JSON
@@ -3253,6 +3748,26 @@
               Copy Prompt
             </button> -->
             <button
+              class="foot-btn"
+              id="btn-save-prompt"
+              onclick="copyFullPrompt(this)"
+              title="Save prompt to file via save-server"
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              Save to File
+            </button>
+            <!-- <button
               class="foot-btn"
               id="btn-copy-ai"
               onclick="copyFullPrompt(this)"
@@ -3272,8 +3787,8 @@
                 <line x1="9" y1="14" x2="13" y2="14" />
               </svg>
               Copy for AI
-            </button>
-            <button class="foot-btn" id="btn-dl" onclick="download()">
+            </button> -->
+            <!-- <button class="foot-btn" id="btn-dl" onclick="download()">
               <svg
                 width="12"
                 height="12"
@@ -3308,7 +3823,7 @@
                 <polyline points="9 14 12 17 15 14" />
               </svg>
               Save to Folder
-            </button>
+            </button> -->
           </footer>
         </main>
       </div>
@@ -4408,9 +4923,9 @@
           (c) => c.enabled,
         );
         const fw =
-          CONNECTOR_STATE.framework === "other"
-            ? CONNECTOR_STATE.customFramework || "other"
-            : CONNECTOR_STATE.framework;
+          FRAMEWORK_STATE.framework === "other"
+            ? FRAMEWORK_STATE.customFramework || "other"
+            : FRAMEWORK_STATE.framework;
 
         let connectorSection = "";
         if (enabledComps.length > 0) {
@@ -4675,6 +5190,9 @@ Rule 16: RESOLVE every color and typography value from \`${base}-style.json\` be
         // ── Codebase conventions (from Codebase tab) ──
         const codebaseSection = buildCodebaseSection();
 
+        // ── Framework & Tech Stack ──
+        const frameworkSection = buildFrameworkSection();
+
         // ── Personality & Mission (from Personality tab) ──
         const personalitySection = buildPersonalitySection();
 
@@ -4761,6 +5279,25 @@ ${secTmpl.content}
             "').then(r=>r.json());\n// Resolve a layer by name:\nconst get  = name => fetch(idx.layers.find(l=>l.name===name).file).then(r=>r.json());\n\nconst style = await get('style');\nconst page  = await get('page');\nconst primary    = style.colors['Color/Primary']?.value;\nconst loginFrame = page.pages[0].frames.find(f=>f.name==='Login');\n```\n"
           : "";
 
+        // ── Inline JSON layers ──
+        const JSON_LAYERS = [
+          { name: "token",     label: "Layer 1 · Token",     data: files.token },
+          { name: "style",     label: "Layer 2 · Style",     data: files.style },
+          { name: "component", label: "Layer 3 · Component", data: files.component },
+          { name: "pattern",   label: "Layer 4 · Pattern",   data: files.pattern },
+          { name: "template",  label: "Layer 5 · Template",  data: files.template },
+          { name: "page",      label: "Layer 6 · Page",      data: files.page },
+          { name: "flow",      label: "Layer 7 · Flow",      data: files.flow },
+          { name: "prototype", label: "Layer 8 · Prototype", data: files.prototype },
+        ];
+        const jsonDataSection = hasFigma
+          ? "\n\n## Inline Design JSON\nAll 8 design memory layers are embedded below. Use these directly — no external file fetching needed.\n\n" +
+            JSON_LAYERS
+              .filter((l) => l.data)
+              .map((l) => `### ${l.label} · \`${getFile(l.name)}\`\n\`\`\`json\n${JSON.stringify(l.data, null, 2)}\n\`\`\``)
+              .join("\n\n")
+          : "";
+
         return `${!meta.file_key ? "> ℹ No Figma design loaded. This prompt includes connectors, templates and codebase conventions only. Extract a Figma design to add design tokens and page layers.\n\n" : ""}${pageTypeAdvisory}# Design Memory${meta.file_name ? ` · ${meta.file_name}` : ""}
 ${meta.extracted_at ? `Extracted from Figma on ${new Date(meta.extracted_at).toLocaleDateString()}\n` : ""}
 ## Role
@@ -4821,14 +5358,14 @@ connector.json cross-references component, style, and page layers to map Figma c
 - Prototype: ${conns} connections across ${meta.flow_count || 0} flows
 - Connectors: ${enabledComps.length} mapped to ${fw}
 - Code template: ${selectedTmpl ? `${selectedTmpl.name} (${selectedTmpl.file})` : "none selected"}${selectedSectionTmpls.length > 0 ? " + " + selectedSectionTmpls.length + " section(s): " + selectedSectionTmpls.map((t) => t.name).join(", ") : ""}
-${personalitySection}${businessSection}${codebaseSection}
+${personalitySection}${businessSection}${codebaseSection}${frameworkSection}
 ${connectorSection}${templateSection}${scaffoldSection}${sketchSection ? "\n\n## Screen Layout Sketches\nASCII box-art previews of every design frame. **Wireframe** shows layout structure and node roles. **Colored** adds fill and color annotations. Read these before the raw JSON to quickly understand the design intent.\n\n" + sketchSection : ""}
 
 ## Framework
 Apply the design memory to whichever UI framework the project uses (React, Vue, Svelte, Angular, plain HTML/CSS, etc.).
 Adapt component names, styling conventions, and routing to the target framework while strictly following the values defined in the session JSON layers.
 
-${usageSection}`;
+${usageSection}${jsonDataSection}`;
       }
 
       function renderPrompt(files) {
@@ -4840,9 +5377,9 @@ ${usageSection}`;
           (c) => c.enabled,
         ).length;
         const fw =
-          CONNECTOR_STATE.framework === "other"
-            ? CONNECTOR_STATE.customFramework || "other"
-            : CONNECTOR_STATE.framework;
+          FRAMEWORK_STATE.framework === "other"
+            ? FRAMEWORK_STATE.customFramework || "other"
+            : FRAMEWORK_STATE.framework;
         const selectedTmpl = TEMPLATE_STATE.selected
           ? TEMPLATE_STATE.templates[TEMPLATE_STATE.selected]
           : null;
@@ -4948,6 +5485,7 @@ await anthropic.messages.create({
   </div>
   <div class="conn-footer">
     <span class="conn-footer-info">Prompt includes ${enabledConns} connector${enabledConns !== 1 ? "s" : ""} · ${fw}${selectedTmpl ? " · page: " + escHtml(selectedTmpl.name) : ""}${selectedSectionTmpls.length > 0 ? " · " + selectedSectionTmpls.length + " section" + (selectedSectionTmpls.length !== 1 ? "s" : "") : ""} · synced from Connectors &amp; Templates tabs</span>
+    <span id="save-status" style="font-family:var(--mono);font-size:10px;color:var(--tx3);flex-shrink:0">–</span>
     <button class="foot-btn" onclick="copyFullPrompt(this)">
       ${copyIcon}
       Copy Full Prompt
@@ -5089,14 +5627,16 @@ await anthropic.messages.create({
         else switchTabId(id);
         document.getElementById("pane-" + id)?.classList.add("active");
         if (id === "connector") renderConnectorPane();
+        if (id === "framework") renderFrameworkPane();
         if (id === "template") renderTemplatePane();
         if (id === "codebase") renderCodebasePane();
-        if (id === "personality") renderPersonalityPane();
+        if (id === "personality" && !_personalityPaneReady) { renderPersonalityPane(); _personalityPaneReady = true; }
         if (id === "business") renderBusinessPane();
+        if (id === "settings") renderSettingsPane();
         if (id === "prompt") {
           const _d = SCHEMA || {};
-          PROMPT = buildPrompt(_d);
-          renderPrompt(_d);
+          if (!PROMPT) { PROMPT = buildPrompt(_d); _promptDirty = true; }
+          if (_promptDirty) { renderPrompt(_d); _promptDirty = false; }
         }
         if (id === "jldesign") renderJLDesignPane();
       }
@@ -5111,10 +5651,12 @@ await anthropic.messages.create({
           .forEach((p) => p.classList.remove("active"));
         document.getElementById("pane-" + id)?.classList.add("active");
         if (id === "connector") renderConnectorPane();
+        if (id === "framework") renderFrameworkPane();
         if (id === "jldesign") renderJLDesignPane();
         if (id === "template") renderTemplatePane();
         if (id === "codebase") renderCodebasePane();
         if (id === "business") renderBusinessPane();
+        if (id === "settings") renderSettingsPane();
       }
 
       /* ── Actions ── */
@@ -5182,6 +5724,199 @@ await anthropic.messages.create({
           }, 2000);
         });
       }
+      function getCurrentConfig() {
+        return {
+          figmaToken: FIGMA_TOKEN || "",
+          framework: FRAMEWORK_STATE,
+          agents: AGENTS_STATE,
+          business: BUSINESS_STATE,
+          codebase: CODEBASE_STATE,
+          connectors: CONNECTOR_STATE,
+          templates: {
+            selected: TEMPLATE_STATE.selected,
+            selectedSections: TEMPLATE_STATE.selectedSections,
+            templates: TEMPLATE_STATE.templates,
+            caseStudies: TEMPLATE_STATE.caseStudies,
+          },
+        };
+      }
+
+      async function saveConfigForMCP() {
+        const btn = document.getElementById("btn-save-mcp");
+        const origHTML = btn ? btn.innerHTML : "";
+        if (btn) { btn.disabled = true; btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Saving…'; }
+        try {
+          const config = getCurrentConfig();
+          const json = JSON.stringify(config, null, 2);
+          // Try File System Access API (Chromium) for in-place save
+          if (window.showSaveFilePicker) {
+            try {
+              const handle = await window.showSaveFilePicker({
+                suggestedName: "prompt-tools-config.json",
+                types: [{ description: "JSON Config", accept: { "application/json": [".json"] } }],
+              });
+              const writable = await handle.createWritable();
+              await writable.write(json);
+              await writable.close();
+              if (btn) {
+                btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Saved!';
+                btn.classList.add("copied");
+                setTimeout(() => { btn.innerHTML = origHTML; btn.classList.remove("copied"); btn.disabled = false; }, 2000);
+              }
+              return;
+            } catch (e) {
+              if (e.name === "AbortError") { if (btn) { btn.innerHTML = origHTML; btn.disabled = false; } return; }
+              // fall through to download
+            }
+          }
+          // Fallback: browser download
+          const blob = new Blob([json], { type: "application/json" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "prompt-tools-config.json";
+          a.click();
+          URL.revokeObjectURL(a.href);
+          if (btn) {
+            btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Downloaded!';
+            btn.classList.add("copied");
+            setTimeout(() => { btn.innerHTML = origHTML; btn.classList.remove("copied"); btn.disabled = false; }, 2000);
+          }
+        } catch (err) {
+          if (btn) { btn.innerHTML = origHTML; btn.disabled = false; }
+          alert("Save failed: " + err.message);
+        }
+      }
+
+      function renderSettingsPane() {
+        const cfg = getCurrentConfig();
+        const json = JSON.stringify(cfg, null, 2);
+
+        // Update textarea
+        const ta = document.getElementById('settings-json');
+        if (ta) ta.value = json;
+
+        // Update size indicator
+        const sizeEl = document.getElementById('stg-json-size');
+        if (sizeEl) sizeEl.textContent = (new Blob([json]).size / 1024).toFixed(1) + ' KB';
+
+        // Build summary cards
+        const cardsEl = document.getElementById('stg-cards');
+        if (!cardsEl) return;
+
+        const fw = FRAMEWORK_STATE.framework === 'other'
+          ? (FRAMEWORK_STATE.customFramework || 'Custom')
+          : (FRAMEWORK_STATE.framework || 'None');
+        const enabledStack = (FRAMEWORK_STATE.techStack || []).filter(t => t.enabled).length;
+        const agentCount = 1 + (AGENTS_STATE.agents || []).length;
+        const teamName = AGENTS_STATE.teamName || 'Dev Pipeline';
+        const connectors = Object.values(CONNECTOR_STATE.components || {});
+        const activeConnectors = connectors.filter(c => c.enabled).length;
+        const totalConnectors = connectors.length;
+        const selectedTemplates = (TEMPLATE_STATE.selected || []).length;
+        const bizItems = (cfg.business || []);
+        const businessFilled = Array.isArray(bizItems) ? bizItems.length > 0
+          : !!(bizItems && (bizItems.name || bizItems.industry || bizItems.appDescription));
+        const codebase = cfg.codebase || {};
+        const codebaseFilled = !!(codebase.enabled && (codebase.markdown || '').trim());
+
+        const cards = [
+          { icon: '⚙️', val: fw, lbl: 'Framework', detail: enabledStack > 0 ? `+ ${enabledStack} stack items` : 'No stack items', filled: enabledStack > 0 },
+          { icon: '🤖', val: agentCount, lbl: 'Agents', detail: teamName, filled: true },
+          { icon: '🔗', val: activeConnectors, lbl: 'Connectors', detail: totalConnectors > 0 ? `${totalConnectors} total` : 'None defined', filled: activeConnectors > 0 },
+          { icon: '📄', val: selectedTemplates, lbl: 'Templates', detail: selectedTemplates > 0 ? 'selected' : 'None selected', filled: selectedTemplates > 0 },
+          { icon: '🏢', val: businessFilled ? '✓' : '—', lbl: 'Business', detail: businessFilled ? 'Configured' : 'Empty', filled: businessFilled },
+          { icon: '💻', val: codebaseFilled ? '✓' : '—', lbl: 'Codebase', detail: codebaseFilled ? 'Configured' : 'Empty', filled: codebaseFilled },
+        ];
+
+        cardsEl.innerHTML = cards.map(c =>
+          `<div class="stg-card${c.filled ? ' stg-filled' : ''}">
+            <div class="stg-card-icon">${c.icon}</div>
+            <div class="stg-card-val">${c.val}</div>
+            <div class="stg-card-lbl">${c.lbl}</div>
+            <div class="stg-card-detail">${c.detail}</div>
+          </div>`
+        ).join('');
+      }
+
+      function copyConfigToClipboard(btn) {
+        const json = JSON.stringify(getCurrentConfig(), null, 2);
+        navigator.clipboard.writeText(json).then(() => {
+          const orig = btn.innerHTML;
+          btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+        }).catch(() => alert('Copy failed – use Download Config instead'));
+      }
+
+      function openConfigFilePicker() {
+        const inp = document.getElementById('config-file-input');
+        if (inp) inp.click();
+      }
+
+      function importConfigFromFile(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const cfg = JSON.parse(e.target.result);
+            applyConfig(cfg);
+            renderSettingsPane();
+            alert('Config imported successfully');
+          } catch (err) {
+            alert('Invalid JSON: ' + err.message);
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+      }
+
+      function applyConfigFromTextarea() {
+        const ta = document.getElementById('settings-json');
+        if (!ta) return alert('No JSON to apply');
+        try {
+          const cfg = JSON.parse(ta.value);
+          applyConfig(cfg);
+          alert('Config applied');
+        } catch (err) {
+          alert('Invalid JSON: ' + err.message);
+        }
+      }
+
+      function applyConfig(cfg) {
+        try {
+          if (!cfg || typeof cfg !== 'object') throw new Error('Config must be an object');
+          if (cfg.figmaToken !== undefined) {
+            FIGMA_TOKEN = cfg.figmaToken || null;
+            const t = document.getElementById('figma-token-input'); if (t) t.value = FIGMA_TOKEN || '';
+          }
+          if (cfg.framework) {
+            if (cfg.framework.framework !== undefined) FRAMEWORK_STATE.framework = cfg.framework.framework;
+            if (cfg.framework.customFramework !== undefined) FRAMEWORK_STATE.customFramework = cfg.framework.customFramework;
+            if (Array.isArray(cfg.framework.techStack)) FRAMEWORK_STATE.techStack = cfg.framework.techStack;
+            saveFrameworkState(); renderFrameworkPane();
+          }
+          if (cfg.agents) { AGENTS_STATE = cfg.agents; savePersonalityState(); renderPersonalityPane(); updatePrompt(); }
+          if (cfg.business) { BUSINESS_STATE = cfg.business; saveBusinessState(); renderBusinessPane(); }
+          if (cfg.codebase) { CODEBASE_STATE = cfg.codebase; saveCodebaseState(); renderCodebasePane(); }
+          if (cfg.connectors) {
+            if (cfg.connectors.components) CONNECTOR_STATE.components = cfg.connectors.components;
+            else if (typeof cfg.connectors === 'object') CONNECTOR_STATE = cfg.connectors;
+            renderConnectorPane();
+          }
+          if (cfg.templates) {
+            TEMPLATE_STATE.selected = cfg.templates.selected || TEMPLATE_STATE.selected;
+            TEMPLATE_STATE.selectedSections = cfg.templates.selectedSections || TEMPLATE_STATE.selectedSections;
+            TEMPLATE_STATE.templates = cfg.templates.templates || TEMPLATE_STATE.templates;
+            TEMPLATE_STATE.caseStudies = cfg.templates.caseStudies || TEMPLATE_STATE.caseStudies;
+            renderTemplatePane();
+          }
+          schedulePromptRebuild();
+        } catch (err) {
+          console.error('applyConfig error', err);
+        }
+      }
+
       async function download() {
         if (!SCHEMA) return;
         const btn = document.getElementById("btn-dl");
@@ -5289,8 +6024,6 @@ await anthropic.messages.create({
 
       /* ── Connectors ── */
       let CONNECTOR_STATE = {
-        framework: "other",
-        customFramework: "Vue2",
         components: {},
       };
       let CONN_EXPANDED = {};
@@ -5304,7 +6037,87 @@ await anthropic.messages.create({
         "other",
       ];
 
-      /* ── Template State ── */
+      /* ── Framework & Tech Stack ── */
+      let FRAMEWORK_STATE = {
+        framework: "other",
+        customFramework: "Vue2",
+        techStack: [
+          { id: "react",      category: "Frontend",         icon: "⚛️",  name: "React",        version: "",  enabled: false, description: "UI component library", custom: false },
+          { id: "vue",        category: "Frontend",         icon: "💚",  name: "Vue",          version: "3", enabled: false, description: "Progressive framework", custom: false },
+          { id: "angular",    category: "Frontend",         icon: "🔴",  name: "Angular",      version: "",  enabled: false, description: "Full platform framework", custom: false },
+          { id: "svelte",     category: "Frontend",         icon: "🟠",  name: "Svelte",       version: "",  enabled: false, description: "Compiler-based framework", custom: false },
+          { id: "nextjs",     category: "Frontend",         icon: "▲",   name: "Next.js",      version: "",  enabled: false, description: "React full-stack framework", custom: false },
+          { id: "nuxt",       category: "Frontend",         icon: "💚",  name: "Nuxt",         version: "",  enabled: false, description: "Vue full-stack framework", custom: false },
+          { id: "antd",       category: "UI Library",       icon: "🐜",  name: "Ant Design",   version: "5", enabled: false, description: "Enterprise-class UI components", custom: false },
+          { id: "mui",        category: "UI Library",       icon: "💙",  name: "Material UI",  version: "",  enabled: false, description: "Google Material Design", custom: false },
+          { id: "tailwind",   category: "UI Library",       icon: "🎨",  name: "Tailwind CSS", version: "3", enabled: false, description: "Utility-first CSS framework", custom: false },
+          { id: "bootstrap",  category: "UI Library",       icon: "🅱️",  name: "Bootstrap",    version: "5", enabled: false, description: "Component CSS framework", custom: false },
+          { id: "redux",      category: "State",            icon: "🟣",  name: "Redux",        version: "",  enabled: false, description: "Predictable state container", custom: false },
+          { id: "zustand",    category: "State",            icon: "🐻",  name: "Zustand",      version: "",  enabled: false, description: "Lightweight state management", custom: false },
+          { id: "pinia",      category: "State",            icon: "🍍",  name: "Pinia",        version: "",  enabled: false, description: "Vue official store", custom: false },
+          { id: "nodejs",     category: "Backend",          icon: "🟢",  name: "Node.js",      version: "",  enabled: false, description: "JavaScript runtime", custom: false },
+          { id: "dotnet",     category: "Backend",          icon: "🔵",  name: ".NET",         version: "",  enabled: false, description: "Microsoft ASP.NET Core", custom: false },
+          { id: "python",     category: "Backend",          icon: "🐍",  name: "Python",       version: "",  enabled: false, description: "Django / FastAPI / Flask", custom: false },
+          { id: "typescript", category: "Language",         icon: "🔷",  name: "TypeScript",   version: "5", enabled: false, description: "Typed JavaScript superset", custom: false },
+          { id: "javascript", category: "Language",         icon: "🟡",  name: "JavaScript",   version: "",  enabled: false, description: "ES2022+ vanilla JS", custom: false },
+          { id: "vite",       category: "Build Tool",       icon: "⚡",  name: "Vite",         version: "",  enabled: false, description: "Fast dev server & bundler", custom: false },
+          { id: "webpack",    category: "Build Tool",       icon: "📦",  name: "Webpack",      version: "5", enabled: false, description: "Module bundler", custom: false },
+          { id: "rest",       category: "API",              icon: "🌐",  name: "REST API",     version: "",  enabled: false, description: "HTTP REST endpoints", custom: false },
+          { id: "graphql",    category: "API",              icon: "🔺",  name: "GraphQL",      version: "",  enabled: false, description: "Query language for APIs", custom: false },
+          { id: "i18n",       category: "Utilities",        icon: "🌍",  name: "i18n",         version: "",  enabled: false, description: "Internationalisation (react-i18next / vue-i18n)", custom: false },
+          { id: "dayjs",      category: "Utilities",        icon: "📅",  name: "Day.js",       version: "",  enabled: false, description: "Date/time manipulation library", custom: false },
+          { id: "axios",      category: "Utilities",        icon: "🔗",  name: "Axios",        version: "",  enabled: false, description: "HTTP client", custom: false },
+        ],
+      };
+      const STACK_CATEGORIES = ["Frontend", "UI Library", "State", "Backend", "Language", "Build Tool", "API", "Utilities"];
+
+      const FRAMEWORK_STORAGE_KEY = "prompt-engine-framework-state";
+
+      function loadFrameworkState() {
+        try {
+          const raw = localStorage.getItem(FRAMEWORK_STORAGE_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function saveFrameworkState() {
+        try {
+          localStorage.setItem(
+            FRAMEWORK_STORAGE_KEY,
+            JSON.stringify({
+              framework: FRAMEWORK_STATE.framework,
+              customFramework: FRAMEWORK_STATE.customFramework,
+              techStack: FRAMEWORK_STATE.techStack,
+            }),
+          );
+        } catch (_) {}
+      }
+
+      (function applySavedFrameworkState() {
+        const saved = loadFrameworkState();
+        if (!saved) return;
+        if (saved.framework !== undefined) FRAMEWORK_STATE.framework = saved.framework;
+        if (saved.customFramework !== undefined) FRAMEWORK_STATE.customFramework = saved.customFramework;
+        if (Array.isArray(saved.techStack)) {
+          const byId = {};
+          FRAMEWORK_STATE.techStack.forEach((it) => (byId[it.id] = it));
+          saved.techStack.forEach((si) => {
+            if (!si) return;
+            if (si.id && byId[si.id]) {
+              byId[si.id].enabled = si.enabled !== undefined ? si.enabled : byId[si.id].enabled;
+              byId[si.id].version = si.version !== undefined ? si.version : byId[si.id].version;
+              byId[si.id].name = si.name !== undefined ? si.name : byId[si.id].name;
+              byId[si.id].description = si.description !== undefined ? si.description : byId[si.id].description;
+            } else if (si.custom) {
+              FRAMEWORK_STATE.techStack.push(si);
+            }
+          });
+        }
+      })();
+
       let TEMPLATE_STATE = {
         selected: null, // key of selected PAGE template (single)
         selectedSections: [], // keys of selected SECTIONS templates (multi)
@@ -7053,6 +7866,7 @@ if (document.readyState === 'loading') {
         } catch (_) {
           // Ignore storage errors (private mode / quota exceeded)
         }
+        schedulePromptRebuild();
       }
 
       /* ── Business State ── */
@@ -7082,6 +7896,7 @@ if (document.readyState === 'loading') {
             JSON.stringify(BUSINESS_STATE),
           );
         } catch (_) {}
+        schedulePromptRebuild();
       }
 
       let BUSINESS_STATE = { ...loadBusinessState() };
@@ -7258,6 +8073,20 @@ if (document.readyState === 'loading') {
         },
       ];
 
+      function _makeMasterAgent() {
+        return {
+          name: "Orchestrator",
+          preset: "strategic",
+          traits: { proactive: true, empathetic: true, analytical: true, creative: true },
+          communicationStyle: { formal: true, casual: true, technical: true, friendly: true },
+          mission: "core-responsibility",
+          missionCustom: "",
+          feedbackBehavior: "loop",
+          outputFormat: "summary",
+          collapsed: false,
+        };
+      }
+
       function _makeAgent(preset) {
         const p =
           AGENT_PRESETS.find((a) => a.value === preset) || AGENT_PRESETS[0];
@@ -7269,6 +8098,8 @@ if (document.readyState === 'loading') {
             Math.random().toString(36).slice(2, 6),
           preset: preset || "strategic",
           customName: p.label.replace(/^\S+\s/, ""),
+          taskName: "",
+          instructionScope: "generate-code",
           traits: {
             proactive: true,
             empathetic: true,
@@ -7290,46 +8121,72 @@ if (document.readyState === 'loading') {
       }
 
       let AGENTS_STATE = {
-        teamName: "Dev Team",
-        teamMode: "collaborative",
-        agents: [_makeAgent("strategic")],
+        teamName: "Dev Pipeline",
+        teamMode: "sequential",
+        masterAgent: _makeMasterAgent(),
+        agents: [_makeAgent("innovator")],
       };
 
       function loadPersonalityState() {
         try {
-          const saved = localStorage.getItem("agents_state_v2");
-          if (saved) return JSON.parse(saved);
-          // Migrate from old single-agent format
+          const saved = localStorage.getItem("agents_state_v3");
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            // Ensure masterAgent exists (migration from v3 without it)
+            if (!parsed.masterAgent) parsed.masterAgent = _makeMasterAgent();
+            // Ensure each sub-agent has taskName / instructionScope
+            (parsed.agents || []).forEach((a) => {
+              if (!a.taskName) a.taskName = "";
+              if (!a.instructionScope) a.instructionScope = "generate-code";
+            });
+            return parsed;
+          }
+          // Migrate from old agents_state_v2
+          const v2 = localStorage.getItem("agents_state_v2");
+          if (v2) {
+            const o = JSON.parse(v2);
+            const firstAgent = (o.agents || [])[0] || {};
+            const masterAgent = _makeMasterAgent();
+            masterAgent.name = firstAgent.customName || "Orchestrator";
+            masterAgent.preset = firstAgent.preset || "strategic";
+            masterAgent.traits = firstAgent.traits || masterAgent.traits;
+            masterAgent.communicationStyle = firstAgent.communicationStyle || masterAgent.communicationStyle;
+            masterAgent.mission = firstAgent.mission || "core-responsibility";
+            masterAgent.missionCustom = firstAgent.missionCustom || "";
+            const subAgents = (o.agents || []).slice(1).map((a) => ({
+              ...a,
+              taskName: a.taskName || "",
+              instructionScope: a.instructionScope || "generate-code",
+            }));
+            return {
+              teamName: o.teamName || "Dev Pipeline",
+              teamMode: o.teamMode || "sequential",
+              masterAgent,
+              agents: subAgents.length ? subAgents : [_makeAgent("innovator")],
+            };
+          }
+          // Migrate from very old personality_state
           const old = localStorage.getItem("personality_state");
           if (old) {
             const o = JSON.parse(old);
             return {
-              teamName: "Dev Team",
-              teamMode: "collaborative",
-              agents: [
-                {
-                  id: "agent-migrated",
-                  preset: o.agentPreset || "strategic",
-                  customName: o.agentCustom || "",
-                  traits: o.traits || {
-                    proactive: true,
-                    empathetic: true,
-                    analytical: true,
-                    creative: true,
-                  },
-                  communicationStyle: o.communicationStyle || {
-                    formal: true,
-                    casual: true,
-                    technical: true,
-                    friendly: true,
-                  },
-                  mission: o.mission || "core-responsibility",
-                  missionCustom: o.missionCustom || "",
-                  primaryGoal: o.primaryGoal || "full-stack",
-                  enabled: o.enabled !== false,
-                  collapsed: false,
-                },
-              ],
+              teamName: "Dev Pipeline",
+              teamMode: "sequential",
+              masterAgent: _makeMasterAgent(),
+              agents: [{
+                id: "agent-migrated",
+                preset: o.agentPreset || "innovator",
+                customName: o.agentCustom || "",
+                taskName: "",
+                instructionScope: "generate-code",
+                traits: o.traits || { proactive: true, empathetic: true, analytical: true, creative: true },
+                communicationStyle: o.communicationStyle || { formal: true, casual: true, technical: true, friendly: true },
+                mission: o.mission || "core-responsibility",
+                missionCustom: o.missionCustom || "",
+                primaryGoal: o.primaryGoal || "full-stack",
+                enabled: o.enabled !== false,
+                collapsed: false,
+              }],
             };
           }
         } catch (_) {}
@@ -7338,7 +8195,7 @@ if (document.readyState === 'loading') {
 
       function savePersonalityState() {
         try {
-          localStorage.setItem("agents_state_v2", JSON.stringify(AGENTS_STATE));
+          localStorage.setItem("agents_state_v3", JSON.stringify(AGENTS_STATE));
         } catch (_) {}
       }
 
@@ -7353,10 +8210,13 @@ if (document.readyState === 'loading') {
         return p ? p.icon : "🤖";
       }
 
+      let _personalityPaneReady = false;
+
       function addAgent() {
-        if (AGENTS_STATE.agents.length >= 5) return;
+        if (AGENTS_STATE.agents.length >= 8) return;
         AGENTS_STATE.agents.push(_makeAgent("innovator"));
         savePersonalityState();
+        _personalityPaneReady = false;
         renderPersonalityPane();
         updatePrompt();
       }
@@ -7365,8 +8225,38 @@ if (document.readyState === 'loading') {
         if (AGENTS_STATE.agents.length <= 1) return;
         AGENTS_STATE.agents = AGENTS_STATE.agents.filter((a) => a.id !== id);
         savePersonalityState();
+        _personalityPaneReady = false;
         renderPersonalityPane();
         updatePrompt();
+      }
+
+      function toggleMasterAgent() {
+        AGENTS_STATE.masterAgent.collapsed = !AGENTS_STATE.masterAgent.collapsed;
+        savePersonalityState();
+        const body = document.getElementById("master-agent-body");
+        const chevron = document.getElementById("master-agent-chevron");
+        if (body) body.style.display = AGENTS_STATE.masterAgent.collapsed ? "none" : "block";
+        if (chevron) chevron.style.transform = AGENTS_STATE.masterAgent.collapsed ? "rotate(-90deg)" : "rotate(0deg)";
+      }
+
+      function updateMasterField(field, value) {
+        const m = AGENTS_STATE.masterAgent;
+        if (field.includes(".")) {
+          const [obj, key] = field.split(".");
+          m[obj][key] = value;
+        } else {
+          m[field] = value;
+        }
+        if (field === "mission") {
+          const w = document.getElementById("master-custom-mission-wrapper");
+          if (w) w.style.display = value === "custom" ? "block" : "none";
+        }
+        savePersonalityState();
+        updatePrompt();
+        if (field === "name") {
+          const el = document.getElementById("master-header-name");
+          if (el) el.textContent = value || "Orchestrator";
+        }
       }
 
       function toggleAgentEnabled(id, checked) {
@@ -7428,9 +8318,13 @@ if (document.readyState === 'loading') {
       // Load from localStorage on init
       const _savedAgents = loadPersonalityState();
       if (_savedAgents) Object.assign(AGENTS_STATE, _savedAgents);
-      // Ensure collapsed state exists
+      // Ensure masterAgent exists
+      if (!AGENTS_STATE.masterAgent) AGENTS_STATE.masterAgent = _makeMasterAgent();
+      // Ensure collapsed state and new fields exist on all agents
       AGENTS_STATE.agents.forEach((a, i) => {
         if (a.collapsed === undefined) a.collapsed = i > 0;
+        if (!a.taskName) a.taskName = "";
+        if (!a.instructionScope) a.instructionScope = "generate-code";
       });
 
       let CODEBASE_STATE = {
@@ -7443,77 +8337,136 @@ if (document.readyState === 'loading') {
         return `\n\n## Codebase Conventions\n${CODEBASE_STATE.markdown.trim()}`;
       }
 
+      function buildFrameworkSection() {
+        const fwRaw = FRAMEWORK_STATE.framework;
+        let fw = fwRaw === "other" ? FRAMEWORK_STATE.customFramework || "other" : fwRaw;
+        if (fwRaw && fwRaw !== "other") {
+          const m = FRAMEWORK_STATE.techStack.find((i) => i.id === fwRaw || i.id.toLowerCase() === String(fwRaw).replace(/[^a-zA-Z0-9_]/g, "").toLowerCase());
+          if (m) fw = m.name;
+        }
+        const enabledItems = FRAMEWORK_STATE.techStack.filter((i) => i.enabled);
+        if (!enabledItems.length && fw === "other" && !FRAMEWORK_STATE.customFramework) return "";
+        let s = `\n\n## Tech Stack\nFramework: **${fw}**`;
+        if (enabledItems.length) {
+          const byCategory = {};
+          for (const item of enabledItems) {
+            if (!byCategory[item.category]) byCategory[item.category] = [];
+            byCategory[item.category].push(item);
+          }
+          for (const cat of STACK_CATEGORIES) {
+            const items = byCategory[cat];
+            if (!items) continue;
+            s += `\n\n### ${cat}`;
+            for (const item of items) {
+              s += `\n- ${item.name}${item.version ? ` v${item.version}` : ""}${item.description ? ` — ${item.description}` : ""}`;
+            }
+          }
+        }
+        return s;
+      }
+
+
       function buildPersonalitySection() {
-        const enabledAgents = AGENTS_STATE.agents.filter(
-          (a) => a.enabled !== false,
-        );
-        if (!enabledAgents || enabledAgents.length === 0) return "";
+        const m = AGENTS_STATE.masterAgent;
+        const enabledAgents = AGENTS_STATE.agents.filter((a) => a.enabled !== false);
 
         const getMissionText = (agent) => {
           const presets = {
-            "core-responsibility":
-              "Drive architectural decisions and ensure design consistency",
-            "quality-excellence":
-              "Ensure code quality and enforce best practices",
-            "performance-focus": "Optimize performance and scalability",
-            "user-first": "Prioritize user experience and accessibility",
-            innovation: "Explore new technologies and approaches",
+            "core-responsibility": "Drive architectural decisions and ensure design consistency",
+            "quality-excellence":  "Ensure code quality and enforce best practices",
+            "performance-focus":   "Optimize performance and scalability",
+            "user-first":          "Prioritize user experience and accessibility",
+            innovation:            "Explore new technologies and approaches",
           };
           return agent.mission === "custom"
             ? agent.missionCustom
             : presets[agent.mission] || agent.mission;
         };
 
-        const teamModeDesc = {
-          collaborative:
-            "Agents work in parallel, each contributing their expertise simultaneously.",
-          sequential:
-            "Agents work in sequence — output of each agent feeds into the next.",
-          specialist:
-            "Each agent owns a specific domain and handles only requests within their specialty.",
+        const formatTraits = (obj) =>
+          Object.keys(obj || {}).filter((k) => obj[k]).map((k) => k.charAt(0).toUpperCase() + k.slice(1)).join(", ");
+
+        const modeDesc = {
+          sequential: "Sub-agents execute in sequence — each agent's instruction output feeds into the next, then results are returned to the Master Agent.",
+          parallel:   "Sub-agents execute in parallel (fan-out) — the Master Agent distributes tasks simultaneously and collects all results.",
+          specialist: "Each sub-agent owns a specific domain — the Master Agent routes requests to the relevant specialist agent.",
+        };
+        const feedbackDesc = {
+          loop:     "Loop — Master Agent receives IDE feedback/diff and iterates further with sub-agents until complete.",
+          finalize: "Finalize — Master Agent collects all sub-agent outputs and produces a final summary for the developer.",
+        };
+        const outputDesc = {
+          summary:   "Summary — high-level description of changes made",
+          diff:      "Diff / Patch — precise line-by-line code changes",
+          changelog: "Changelog — versioned list of modifications",
+        };
+        const scopeDesc = {
+          "generate-code":  "Generate Code",
+          "review-code":    "Review Code",
+          "test-code":      "Write Tests",
+          "document-code":  "Write Documentation",
+          "optimize-code":  "Optimize / Refactor",
+          "custom":         "Custom Scope",
         };
 
-        if (enabledAgents.length === 1) {
-          const a = enabledAgents[0];
-          const traits = Object.keys(a.traits)
-            .filter((k) => a.traits[k])
-            .map((k) => k.charAt(0).toUpperCase() + k.slice(1))
-            .join(", ");
-          const styles = Object.keys(a.communicationStyle)
-            .filter((k) => a.communicationStyle[k])
-            .map((k) => k.charAt(0).toUpperCase() + k.slice(1))
-            .join(", ");
-          const mission = getMissionText(a);
-          let s = "\n\n## Agent Personality & Mission";
-          s += `\n**Agent**: ${_agentIcon(a)} ${_agentName(a)}`;
-          if (a.primaryGoal) s += `\n**Primary Domain**: ${a.primaryGoal}`;
-          if (traits) s += `\n**Personality Traits**: ${traits}`;
-          if (styles) s += `\n**Communication Style**: ${styles}`;
-          if (mission) s += `\n**Mission**: ${mission}`;
-          return s;
+        const teamName = AGENTS_STATE.teamName || "Dev Pipeline";
+        const modeKey = AGENTS_STATE.teamMode || "sequential";
+        const masterName = m ? (m.name || "Orchestrator") : "Orchestrator";
+        const masterMission = m ? getMissionText(m) : "";
+        const masterTraits = m ? formatTraits(m.traits) : "";
+        const masterStyles = m ? formatTraits(m.communicationStyle) : "";
+        const fbBehavior = m ? feedbackDesc[m.feedbackBehavior] || m.feedbackBehavior : "Loop";
+        const outFormat = m ? outputDesc[m.outputFormat] || m.outputFormat : "Summary";
+
+        let s = `\n\n## Agent Pipeline — ${teamName}`;
+        s += `\n**Execution Mode**: ${modeKey.charAt(0).toUpperCase() + modeKey.slice(1)}`;
+        s += `\n${modeDesc[modeKey] || ""}`;
+
+        // Master Agent section
+        s += `\n\n### Master Agent (Orchestrator): 🎯 ${masterName}`;
+        s += `\n- **Role**: Orchestrate sub-agents, route tasks, review IDE feedback, and produce final output to developer`;
+        if (masterTraits) s += `\n- **Traits**: ${masterTraits}`;
+        if (masterStyles) s += `\n- **Communication**: ${masterStyles}`;
+        if (masterMission) s += `\n- **Mission**: ${masterMission}`;
+        s += `\n- **Feedback Behavior**: ${fbBehavior}`;
+        s += `\n- **Output Format**: ${outFormat}`;
+
+        // Pipeline flow
+        s += `\n\n### Pipeline Flow`;
+        s += `\n\`\`\``;
+        s += `\nDeveloper Input → Prompt Builder → 🎯 ${masterName}`;
+        if (modeKey === "parallel") {
+          s += `\n🎯 ${masterName} ⇉ [fan-out to ${enabledAgents.length} sub-agent(s) simultaneously]`;
+        } else {
+          s += `\n🎯 ${masterName} → [routes tasks to sub-agents]`;
+        }
+        enabledAgents.forEach((a, i) => {
+          const taskLabel = a.taskName || `Task ${String.fromCharCode(65 + i)}`;
+          s += `\n  Sub-Agent ${i + 1} (${taskLabel}) → Generate Instruction → IDE AI → Execute`;
+        });
+        s += `\nIDE AI → Feedback / Diff → 🎯 ${masterName}`;
+        s += `\n🎯 ${masterName} → Final Output / Summary to Developer`;
+        s += `\n\`\`\``;
+
+        // Sub-agents
+        if (enabledAgents.length > 0) {
+          s += `\n\n### Sub-Agents`;
+          s += `\nEach sub-agent generates targeted instructions for the IDE AI based on its task scope.`;
+          enabledAgents.forEach((a, i) => {
+            const taskLabel = a.taskName || `Task ${String.fromCharCode(65 + i)}`;
+            const traits = formatTraits(a.traits);
+            const styles = formatTraits(a.communicationStyle);
+            const mission = getMissionText(a);
+            const scope = scopeDesc[a.instructionScope] || a.instructionScope || "Generate Code";
+            s += `\n\n#### Sub-Agent ${i + 1}: ${_agentIcon(a)} ${_agentName(a)} — ${taskLabel}`;
+            s += `\n- **Instruction Scope**: ${scope}`;
+            if (a.primaryGoal) s += `\n- **Domain**: ${a.primaryGoal}`;
+            if (traits) s += `\n- **Traits**: ${traits}`;
+            if (styles) s += `\n- **Style**: ${styles}`;
+            if (mission) s += `\n- **Mission**: ${mission}`;
+          });
         }
 
-        // Multi-agent output
-        let s = `\n\n## Agent Team — ${AGENTS_STATE.teamName || "Dev Team"}`;
-        const modeKey = AGENTS_STATE.teamMode || "collaborative";
-        s += `\n**Collaboration Mode**: ${modeKey.charAt(0).toUpperCase() + modeKey.slice(1)}`;
-        s += `\n${teamModeDesc[modeKey] || ""}`;
-        enabledAgents.forEach((a, i) => {
-          const traits = Object.keys(a.traits)
-            .filter((k) => a.traits[k])
-            .map((k) => k.charAt(0).toUpperCase() + k.slice(1))
-            .join(", ");
-          const styles = Object.keys(a.communicationStyle)
-            .filter((k) => a.communicationStyle[k])
-            .map((k) => k.charAt(0).toUpperCase() + k.slice(1))
-            .join(", ");
-          const mission = getMissionText(a);
-          s += `\n\n### Agent ${i + 1}: ${_agentIcon(a)} ${_agentName(a)}`;
-          if (a.primaryGoal) s += `\n- **Domain**: ${a.primaryGoal}`;
-          if (traits) s += `\n- **Traits**: ${traits}`;
-          if (styles) s += `\n- **Style**: ${styles}`;
-          if (mission) s += `\n- **Mission**: ${mission}`;
-        });
         return s;
       }
 
@@ -7944,80 +8897,164 @@ if (document.readyState === 'loading') {
         const el = document.getElementById("personality-out");
         if (!el) return;
 
-        const renderAgentCard = (agent, idx) => {
+        const TRAITS = [
+          { key: "proactive", label: "⚡ Proactive" },
+          { key: "empathetic", label: "❤️ Empathetic" },
+          { key: "analytical", label: "🧠 Analytical" },
+          { key: "creative", label: "🎨 Creative" },
+        ];
+        const STYLES = [
+          { key: "formal", label: "👔 Formal" },
+          { key: "casual", label: "😊 Casual" },
+          { key: "technical", label: "💻 Technical" },
+          { key: "friendly", label: "🤝 Friendly" },
+        ];
+
+        const buildTraitsHtml = (obj, onchangeFn) =>
+          TRAITS.map((t) => `
+            <label class="pers-checkbox">
+              <input type="checkbox" ${obj[t.key] ? "checked" : ""}
+                onchange="${onchangeFn('traits.' + t.key)}" />
+              <span class="pers-check-label">${t.label}</span>
+            </label>`).join("");
+
+        const buildStylesHtml = (obj, onchangeFn) =>
+          STYLES.map((s) => `
+            <label class="pers-checkbox">
+              <input type="checkbox" ${obj[s.key] ? "checked" : ""}
+                onchange="${onchangeFn('communicationStyle.' + s.key)}" />
+              <span class="pers-check-label">${s.label}</span>
+            </label>`).join("");
+
+        const buildMissionOptsHtml = (currentMission) =>
+          MISSION_OPTIONS.map((m) =>
+            `<option value="${m.value}" ${currentMission === m.value ? "selected" : ""}>${m.label}</option>`
+          ).join("");
+
+        /* ── Master Agent Card ── */
+        const m = AGENTS_STATE.masterAgent;
+        const mCollapsed = !!m.collapsed;
+        const masterCard = `
+<div class="master-agent-card">
+  <div class="master-agent-banner">◈ Master Agent — Orchestrator</div>
+  <div class="master-agent-header" onclick="toggleMasterAgent()">
+    <span class="agent-card-icon">🎯</span>
+    <span class="agent-card-name" id="master-header-name">${escHtml(m.name || "Orchestrator")}</span>
+    <span class="master-agent-role">Orchestrator</span>
+    <svg class="agent-card-chevron" id="master-agent-chevron" style="transform:rotate(${mCollapsed ? "-90deg" : "0deg"})"
+      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </div>
+  <div class="master-agent-body" id="master-agent-body" style="display:${mCollapsed ? "none" : "block"}">
+    <div>
+      <div class="agent-field-label">🏷️ Agent Name</div>
+      <input type="text" class="pers-input" placeholder="e.g. Orchestrator"
+        value="${escHtml(m.name || "Orchestrator")}"
+        oninput="updateMasterField('name',this.value)" />
+    </div>
+    <div>
+      <div class="agent-field-label">⚡ Personality Traits</div>
+      <div class="pers-grid">${buildTraitsHtml(m.traits, (f) => `updateMasterField('${f}',this.checked)`)}</div>
+    </div>
+    <div>
+      <div class="agent-field-label">💬 Communication Style</div>
+      <div class="pers-grid">${buildStylesHtml(m.communicationStyle, (f) => `updateMasterField('${f}',this.checked)`)}</div>
+    </div>
+    <div>
+      <div class="agent-field-label">📋 Mission Statement</div>
+      <select class="pers-select pers-select-fancy" onchange="updateMasterField('mission',this.value)">
+        ${buildMissionOptsHtml(m.mission)}
+      </select>
+      <div id="master-custom-mission-wrapper" style="display:${m.mission === "custom" ? "block" : "none"};margin-top:10px">
+        <textarea class="pers-textarea" placeholder="Define custom mission (max 150 chars)" maxlength="150"
+          oninput="updateMasterField('missionCustom',this.value)">${escHtml(m.missionCustom || "")}</textarea>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div class="agent-field-label" style="margin-bottom:6px">🔄 Feedback Behavior</div>
+        <select class="master-select" onchange="updateMasterField('feedbackBehavior',this.value)">
+          <option value="loop"     ${m.feedbackBehavior === "loop" ? "selected" : ""}>🔁 Loop — iterate with IDE</option>
+          <option value="finalize" ${m.feedbackBehavior === "finalize" ? "selected" : ""}>✅ Finalize — produce output</option>
+        </select>
+      </div>
+      <div>
+        <div class="agent-field-label" style="margin-bottom:6px">📄 Output Format</div>
+        <select class="master-select" onchange="updateMasterField('outputFormat',this.value)">
+          <option value="summary"   ${m.outputFormat === "summary" ? "selected" : ""}>📝 Summary</option>
+          <option value="diff"      ${m.outputFormat === "diff" ? "selected" : ""}>🔀 Diff / Patch</option>
+          <option value="changelog" ${m.outputFormat === "changelog" ? "selected" : ""}>📋 Changelog</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+        /* ── Sub-Agent Card ── */
+        const SCOPE_OPTIONS = [
+          { value: "generate-code",  label: "⚙️ Generate Code" },
+          { value: "review-code",    label: "🔍 Review Code" },
+          { value: "test-code",      label: "🧪 Test Code" },
+          { value: "document-code",  label: "📝 Document Code" },
+          { value: "optimize-code",  label: "⚡ Optimize Code" },
+          { value: "custom",         label: "✍️ Custom Scope" },
+        ];
+
+        const renderSubAgentCard = (agent, idx) => {
           const id = agent.id;
           const isCollapsed = !!agent.collapsed;
           const name = _agentName(agent);
           const icon = _agentIcon(agent);
           const canDelete = AGENTS_STATE.agents.length > 1;
-          const preset =
-            AGENT_PRESETS.find((p) => p.value === agent.preset) ||
-            AGENT_PRESETS[0];
+          const preset = AGENT_PRESETS.find((p) => p.value === agent.preset) || AGENT_PRESETS[0];
           const isEnabled = agent.enabled !== false;
-          const cardClasses = `agent-card${isEnabled ? "" : " disabled"}`;
+          const taskLabel = agent.taskName || `Task ${String.fromCharCode(65 + idx)}`;
 
-          const traitsHtml = [
-            { key: "proactive", label: "⚡ Proactive" },
-            { key: "empathetic", label: "❤️ Empathetic" },
-            { key: "analytical", label: "🧠 Analytical" },
-            { key: "creative", label: "🎨 Creative" },
-          ]
-            .map(
-              (t) => `
-            <label class="pers-checkbox">
-              <input type="checkbox" ${agent.traits[t.key] ? "checked" : ""}
-                onchange="updateAgentField('${id}','traits.${t.key}',this.checked)" />
-              <span class="pers-check-label">${t.label}</span>
-            </label>`,
-            )
-            .join("");
-
-          const styleHtml = [
-            { key: "formal", label: "👔 Formal" },
-            { key: "casual", label: "😊 Casual" },
-            { key: "technical", label: "💻 Technical" },
-            { key: "friendly", label: "🤝 Friendly" },
-          ]
-            .map(
-              (s) => `
-            <label class="pers-checkbox">
-              <input type="checkbox" ${agent.communicationStyle[s.key] ? "checked" : ""}
-                onchange="updateAgentField('${id}','communicationStyle.${s.key}',this.checked)" />
-              <span class="pers-check-label">${s.label}</span>
-            </label>`,
-            )
-            .join("");
-
-          const missionOptsHtml = MISSION_OPTIONS.map(
-            (m) =>
-              `<option value="${m.value}" ${agent.mission === m.value ? "selected" : ""}>${m.label}</option>`,
+          const scopeOptsHtml = SCOPE_OPTIONS.map((s) =>
+            `<option value="${s.value}" ${agent.instructionScope === s.value ? "selected" : ""}>${s.label}</option>`
           ).join("");
 
           return `
-<div class="${cardClasses}" id="agent-card-${id}">
+<div class="agent-card${isEnabled ? "" : " disabled"}" id="agent-card-${id}">
   <div class="agent-card-header" onclick="toggleAgentCard('${id}')">
     <span class="agent-card-icon" id="agent-header-icon-${id}">${icon}</span>
-    <span class="agent-card-name" id="agent-header-name-${id}">${name}</span>
+    <span class="agent-card-name" id="agent-header-name-${id}">${escHtml(name)}</span>
+    ${isCollapsed && agent.taskName ? `<span class="agent-task-badge">${escHtml(agent.taskName)}</span>` : ""}
     <span class="agent-card-role">${preset.value !== "custom" ? preset.label.replace(/^\S+\s/, "") : "Custom"}</span>
-    <label class="conn-toggle" title="Include agent in prompt" onclick="event.stopPropagation()">
-      <input type="checkbox" ${isEnabled ? "checked" : ""} onchange="toggleAgentEnabled('${id}', this.checked)" />
+    <label class="conn-toggle" title="Include in prompt" onclick="event.stopPropagation()">
+      <input type="checkbox" ${isEnabled ? "checked" : ""} onchange="toggleAgentEnabled('${id}',this.checked)" />
       <span class="slider"></span>
     </label>
     <svg class="agent-card-chevron" id="agent-chevron-${id}" style="transform:rotate(${isCollapsed ? "-90deg" : "0deg"})"
       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <polyline points="6 9 12 15 18 9"></polyline>
     </svg>
-    <button class="agent-card-delete" title="Remove agent"
+    <button class="agent-card-delete" title="Remove sub-agent"
       onclick="event.stopPropagation();removeAgent('${id}')"
       ${canDelete ? "" : "disabled"}>✕</button>
-  </div> 
+  </div>
   <div class="agent-card-body" id="agent-body-${id}" style="display:${isCollapsed ? "none" : "block"}">
     <div>
-      <div class="agent-field-label"> Agent Identity</div>
+      <div class="agent-field-label">📌 Task Name</div>
+      <input type="text" class="agent-task-input"
+        placeholder="e.g. Task A — Implement UI Components"
+        value="${escHtml(agent.taskName || "")}"
+        oninput="updateAgentField('${id}','taskName',this.value);
+          const b=document.getElementById('agent-task-badge-${id}');if(b)b.textContent=this.value||'Task ${String.fromCharCode(65 + idx)}'" />
+    </div>
+    <div>
+      <div class="agent-field-label">🎛️ Instruction Scope</div>
+      <select class="pers-select pers-select-fancy" onchange="updateAgentField('${id}','instructionScope',this.value)">
+        ${scopeOptsHtml}
+      </select>
+    </div>
+    <div>
+      <div class="agent-field-label">🏷️ Agent Identity</div>
       <input type="text" class="pers-input"
         list="agent-presets-${id}"
         placeholder="Type or pick agent identity..."
-        value="${agent.customName || _agentName(agent)}"
+        value="${escHtml(agent.customName || _agentName(agent))}"
         oninput="updateAgentField('${id}','customName',this.value)" />
       <datalist id="agent-presets-${id}">
         ${AGENT_PRESETS.filter((p) => p.value !== "custom")
@@ -8026,94 +9063,204 @@ if (document.readyState === 'loading') {
       </datalist>
     </div>
     <div>
-      <div class="agent-field-label">⚡ Personality Traits</div>
-      <div class="pers-grid">${traitsHtml}</div>
-    </div>
-    <div>
-      <div class="agent-field-label">💬 Communication Style</div>
-      <div class="pers-grid">${styleHtml}</div>
-    </div>
-    <div>
-      <div class="agent-field-label">🎯 Primary Goal / Domain</div>
-      <select class="pers-select pers-select-fancy"
-        onchange="updateAgentField('${id}','primaryGoal',this.value)">
-        <option value="ui-ux"       ${agent.primaryGoal === "ui-ux" ? "selected" : ""}>🎨 UI/UX Design</option>
-        <option value="frontend"    ${agent.primaryGoal === "frontend" ? "selected" : ""}>🧩 Frontend Engineering</option>
+      <div class="agent-field-label">🎯 Primary Domain</div>
+      <select class="pers-select pers-select-fancy" onchange="updateAgentField('${id}','primaryGoal',this.value)">
+        <option value="ui-ux"            ${agent.primaryGoal === "ui-ux" ? "selected" : ""}>🎨 UI/UX Design</option>
+        <option value="frontend"         ${agent.primaryGoal === "frontend" ? "selected" : ""}>🧩 Frontend Engineering</option>
         <option value="business-analyst" ${agent.primaryGoal === "business-analyst" ? "selected" : ""}>📝 Business Analyst</option>
-        <option value="backend"     ${agent.primaryGoal === "backend" ? "selected" : ""}>🔧 Backend Development</option>
-        <option value="full-stack"  ${agent.primaryGoal === "full-stack" ? "selected" : ""}>🚀 Full-Stack Development</option>
-        <option value="qa-qc"       ${agent.primaryGoal === "qa-qc" ? "selected" : ""}>🛡️ QA/QC</option>
-        <option value="devops"      ${agent.primaryGoal === "devops" ? "selected" : ""}>⚙️ DevOps & Infrastructure</option>
-        <option value="other"       ${agent.primaryGoal === "other" ? "selected" : ""}>✨ Other</option>
+        <option value="backend"          ${agent.primaryGoal === "backend" ? "selected" : ""}>🔧 Backend Development</option>
+        <option value="full-stack"       ${agent.primaryGoal === "full-stack" ? "selected" : ""}>🚀 Full-Stack Development</option>
+        <option value="qa-qc"            ${agent.primaryGoal === "qa-qc" ? "selected" : ""}>🛡️ QA/QC</option>
+        <option value="devops"           ${agent.primaryGoal === "devops" ? "selected" : ""}>⚙️ DevOps & Infrastructure</option>
+        <option value="other"            ${agent.primaryGoal === "other" ? "selected" : ""}>✨ Other</option>
       </select>
     </div>
     <div>
+      <div class="agent-field-label">⚡ Personality Traits</div>
+      <div class="pers-grid">${buildTraitsHtml(agent.traits, (f) => `updateAgentField('${id}','${f}',this.checked)`)}</div>
+    </div>
+    <div>
+      <div class="agent-field-label">💬 Communication Style</div>
+      <div class="pers-grid">${buildStylesHtml(agent.communicationStyle, (f) => `updateAgentField('${id}','${f}',this.checked)`)}</div>
+    </div>
+    <div>
       <div class="agent-field-label">📋 Mission Statement</div>
-      <select class="pers-select pers-select-fancy"
-        onchange="updateAgentField('${id}','mission',this.value)">
-        ${missionOptsHtml}
+      <select class="pers-select pers-select-fancy" onchange="updateAgentField('${id}','mission',this.value)">
+        ${buildMissionOptsHtml(agent.mission)}
       </select>
       <div id="custom-mission-wrapper-${id}" style="display:${agent.mission === "custom" ? "block" : "none"};margin-top:10px">
         <textarea class="pers-textarea" placeholder="Define your custom mission (max 150 chars)"
           maxlength="150"
-          oninput="updateAgentField('${id}','missionCustom',this.value)">${agent.missionCustom}</textarea>
+          oninput="updateAgentField('${id}','missionCustom',this.value)">${escHtml(agent.missionCustom || "")}</textarea>
       </div>
     </div>
   </div>
 </div>`;
         };
 
-        const agentCardsHtml = AGENTS_STATE.agents
-          .map((a, i) => renderAgentCard(a, i))
-          .join("");
-        const canAdd = AGENTS_STATE.agents.length < 5;
+        const subAgentCardsHtml = AGENTS_STATE.agents.map((a, i) => renderSubAgentCard(a, i)).join("");
+        const canAdd = AGENTS_STATE.agents.length < 8;
+        const subCount = AGENTS_STATE.agents.length;
+
+        /* ── Pipeline flow hint ── */
+        const modeLabels = { sequential: "Sequential", parallel: "Parallel", specialist: "Specialist" };
+        const modeLabel = modeLabels[AGENTS_STATE.teamMode] || "Sequential";
 
         el.innerHTML = `
 <div class="pers-layout">
+  <!-- Pipeline header -->
   <div class="agents-team-header">
     <div class="agents-team-row">
-      <span class="agents-team-label">Team Name</span>
-      <input type="text" class="agents-team-input" placeholder="e.g. Dev Team"
-        value="${AGENTS_STATE.teamName}"
+      <span class="agents-team-label">Pipeline</span>
+      <input type="text" class="agents-team-input" placeholder="e.g. Dev Pipeline"
+        value="${escHtml(AGENTS_STATE.teamName)}"
         oninput="AGENTS_STATE.teamName=this.value;savePersonalityState();updatePrompt()" />
     </div>
     <div class="agents-team-row">
-      <span class="agents-team-label">Team Mode</span>
+      <span class="agents-team-label">Execution</span>
       <select class="agents-team-select"
         onchange="AGENTS_STATE.teamMode=this.value;savePersonalityState();updatePrompt()">
-        <option value="collaborative" ${AGENTS_STATE.teamMode === "collaborative" ? "selected" : ""}>🤝 Collaborative — work in parallel</option>
-        <option value="sequential"    ${AGENTS_STATE.teamMode === "sequential" ? "selected" : ""}>🔗 Sequential — chain output</option>
-        <option value="specialist"    ${AGENTS_STATE.teamMode === "specialist" ? "selected" : ""}>🎯 Specialist — domain ownership</option>
+        <option value="sequential" ${AGENTS_STATE.teamMode === "sequential" ? "selected" : ""}>🔗 Sequential — chain sub-agent output</option>
+        <option value="parallel"   ${AGENTS_STATE.teamMode === "parallel"   ? "selected" : ""}>⚡ Parallel — fan-out to all sub-agents</option>
+        <option value="specialist" ${AGENTS_STATE.teamMode === "specialist" ? "selected" : ""}>🎯 Specialist — domain ownership</option>
       </select>
+    </div>
+    <!-- Pipeline flow hint -->
+    <div class="pipeline-flow-hint">
+      <span class="pipeline-flow-node">Developer Input</span>
+      <span class="pipeline-flow-arrow">→</span>
+      <span class="pipeline-flow-node">Prompt Builder</span>
+      <span class="pipeline-flow-arrow">→</span>
+      <span class="pipeline-flow-node">🎯 Master Agent</span>
+      <span class="pipeline-flow-arrow">${AGENTS_STATE.teamMode === "sequential" ? "→" : "⇉"}</span>
+      <span class="pipeline-flow-node">Sub-Agents (${subCount})</span>
+      <span class="pipeline-flow-arrow">→</span>
+      <span class="pipeline-flow-node">IDE AI</span>
+      <span class="pipeline-flow-arrow">→</span>
+      <span class="pipeline-flow-node">Feedback / Diff</span>
+      <span class="pipeline-flow-arrow">↺</span>
+      <span class="pipeline-flow-node">🎯 Master Agent</span>
     </div>
   </div>
 
   <div class="pers-content">
+    <!-- Master Agent -->
+    ${masterCard}
+
+    <!-- Sub-agents section header -->
+    <div class="subagent-section-hdr">
+      <span class="subagent-section-title">Sub-Agents</span>
+      <div class="subagent-section-line"></div>
+      <span class="subagent-section-badge">${subCount} / 8</span>
+    </div>
+
     <div class="agents-list">
-      ${agentCardsHtml}
+      ${subAgentCardsHtml}
     </div>
 
     <button class="agents-add-btn" onclick="addAgent()" ${canAdd ? "" : "disabled"}>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
       </svg>
-      Add Agent
+      Add Sub-Agent
     </button>
-    <div class="agents-count-badge">${AGENTS_STATE.agents.length} / 5 agents</div>
+    <div class="agents-count-badge">${subCount} / 8 sub-agents · 1 master orchestrator</div>
   </div>
 </div>`;
+        _personalityPaneReady = true;
       }
+
+      /* ── Auto-save prompt to host file via save-server ────────────────────── */
+      const SAVE_SERVER_URL = "http://localhost:7843/save-prompt";
+      let _savePromptTimer = null;
+      let _promptDirty = true;  // true = needs re-render on next tab visit
+      let _rebuildTimer = null;
+
+      // Debounced rebuild + save — safe to call on every keystroke.
+      // Only updates PROMPT text + saves to file; never re-renders the prompt tab.
+      // The tab-switch handler re-renders when the user visits the prompt tab.
+      function schedulePromptRebuild() {
+        clearTimeout(_rebuildTimer);
+        _rebuildTimer = setTimeout(() => {
+          PROMPT = buildPrompt(SCHEMA || {});  // wrapper triggers autoSavePromptToHost
+          _promptDirty = true;
+        }, 600);
+      }
+
+      function _setSaveStatus(state, msg) {
+        const el = document.getElementById("save-status");
+        if (!el) return;
+        el.textContent = msg;
+        el.style.color = state === "ok" ? "var(--ok)" : state === "err" ? "var(--warn)" : "var(--tx3)";
+      }
+
+      // Prevent any accidental page reloads from form submissions or other triggers
+      document.addEventListener("submit", (e) => {
+        if (e.target && e.target.getAttribute("data-no-reload") !== "false") {
+          // Check if this is NOT a real form that should submit
+          const action = e.target.getAttribute("action");
+          const method = e.target.getAttribute("method");
+          if (!action || action === "#" || !method) {
+            e.preventDefault();
+            return false;
+          }
+        }
+      }, true);
+
+      function autoSavePromptToHost(text) {
+        if (!text) return;
+        clearTimeout(_savePromptTimer);
+        _setSaveStatus("pending", "saving…");
+        _savePromptTimer = setTimeout(() => {
+          const kb = (new Blob([text]).size / 1024).toFixed(1);
+          const chars = text.length;
+          fetch(SAVE_SERVER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text }),
+            // Prevent any redirect-based reload
+          })
+            .then((d) => { _setSaveStatus("ok", `✓ current.md (${kb} KB · ${chars} chars)`); })
+            .catch(() => { _setSaveStatus("err", "⚠ save-server offline"); });
+        }, 800);
+        return false;
+      }
+
+      // Wrap buildPrompt so EVERY call — regardless of call site — auto-saves.
+      // This covers all current and future triggers without patching each site.
+      (function () {
+        const _origBuildPrompt = buildPrompt;
+        buildPrompt = function (...args) {
+          const result = _origBuildPrompt.apply(this, args);
+          autoSavePromptToHost(result);
+          return result;
+        };
+      })();
+
+      /* ── MutationObserver: listen for #full-prompt-block content changes ─── */
+      (function () {
+        function setupPromptObserver() {
+          const promptOut = document.getElementById("prompt-out");
+          if (!promptOut) return;
+          const obs = new MutationObserver(() => {
+            if (typeof PROMPT === "string" && PROMPT) {
+              autoSavePromptToHost(PROMPT);
+            }
+          });
+          // Watch direct children of #prompt-out — fires when renderPrompt sets innerHTML
+          obs.observe(promptOut, { childList: true });
+        }
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", setupPromptObserver);
+        } else {
+          setupPromptObserver();
+        }
+      })();
 
       function updatePrompt() {
         savePersonalityState();
-        if (SCHEMA) {
-          PROMPT = buildPrompt(SCHEMA);
-          if (
-            document.getElementById("pane-prompt")?.classList.contains("active")
-          ) {
-            renderPrompt(SCHEMA);
-          }
-        }
+        PROMPT = buildPrompt(SCHEMA || {});  // wrapper triggers autoSavePromptToHost
+        _promptDirty = true;
       }
 
       /* ── JL Design Library data ── */
@@ -8565,23 +9712,17 @@ if (document.readyState === 'loading') {
         if (!el) return;
         const comps = Object.values(CONNECTOR_STATE.components);
         const enabledCount = comps.filter((c) => c.enabled).length;
-        const fw =
-          CONNECTOR_STATE.framework === "other"
-            ? CONNECTOR_STATE.customFramework || "other"
-            : CONNECTOR_STATE.framework;
-        const fwBtns = FRAMEWORKS.map(
-          (f) =>
-            `<button class="fw-btn${CONNECTOR_STATE.framework === f ? " active" : ""}" onclick="setConnFramework('${f}')">${f}</button>`,
-        ).join("");
+        const fw = FRAMEWORK_STATE.framework === "other"
+          ? FRAMEWORK_STATE.customFramework || "other"
+          : FRAMEWORK_STATE.framework;
         const rows = comps.map(_buildConnTableRow).join("");
         const emptyHint = !SCHEMA
           ? '<div style="color:var(--tx3);font-family:var(--mono);font-size:12px;padding:12px 16px 0">Extract a Figma design to auto-populate components, or add connectors manually.</div>'
           : "";
         el.innerHTML = `
     <div class="conn-topbar">
-      <span class="conn-topbar-label">Framework:</span>
-      <div class="fw-group">${fwBtns}</div>
-      ${CONNECTOR_STATE.framework === "other" ? `<input class="fw-custom-input" placeholder="e.g. remix, solid…" value="${escHtml(CONNECTOR_STATE.customFramework)}" oninput="CONNECTOR_STATE.customFramework=this.value" />` : ""}
+      <span class="conn-topbar-label">Component Connectors</span>
+      <span style="font-size:11px;color:var(--tx3);font-family:var(--mono)">· Framework: <strong style="color:var(--tx)">${escHtml(fw)}</strong> <span style="color:var(--tx3);font-size:10px">(set in Framework tab)</span></span>
       <span class="conn-count-badge" style="margin-left:auto">${enabledCount}/${comps.length} mapped</span>
     </div>
     <div class="conn-main">
@@ -8612,7 +9753,7 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="conn-footer">
-      <span class="conn-footer-info">${enabledCount} component${enabledCount !== 1 ? "s" : ""} mapped · ${fw} · changes reflect in Agent Prompt automatically</span>
+      <span class="conn-footer-info">${enabledCount} component${enabledCount !== 1 ? "s" : ""} mapped · ${escHtml(fw)} · changes reflect in Agent Prompt automatically</span>
       <button class="foot-btn" onclick="syncPromptFromConnectors()">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Sync to Agent Prompt
@@ -8672,8 +9813,8 @@ if (document.readyState === 'loading') {
       }
 
       function setConnFramework(fw) {
-        CONNECTOR_STATE.framework = fw;
-        renderConnectorPane();
+        // Legacy — framework now lives in FRAMEWORK_STATE
+        setFramework(fw);
       }
 
       function addManualConnector() {
@@ -8740,9 +9881,9 @@ if (document.readyState === 'loading') {
         const meta = SCHEMA.index?.meta || {};
         const base = `design-memory-${meta.file_key}`;
         const fw =
-          CONNECTOR_STATE.framework === "other"
-            ? CONNECTOR_STATE.customFramework || "other"
-            : CONNECTOR_STATE.framework;
+          FRAMEWORK_STATE.framework === "other"
+            ? FRAMEWORK_STATE.customFramework || "other"
+            : FRAMEWORK_STATE.framework;
 
         // Build a lookup map from figma_id → component entry in component.json
         const compLookup = {};
@@ -10335,7 +11476,174 @@ if (document.readyState === 'loading') {
         document.getElementById("pane-prompt")?.classList.add("active");
       }
 
-      /* ── Copy Full Context for AI Chat (all-in-one, fully inline — no external fetching) ── */
+      /* ── Framework Pane ── */
+      function renderFrameworkPane() {
+        const el = document.getElementById("framework-out");
+        if (!el) return;
+        const fw = FRAMEWORK_STATE.framework === "other"
+          ? FRAMEWORK_STATE.customFramework || "other"
+          : FRAMEWORK_STATE.framework;
+        const customInput = FRAMEWORK_STATE.framework === "other"
+          ? `<input class="fw-custom-input" placeholder="e.g. remix, solid…" value="${escHtml(FRAMEWORK_STATE.customFramework)}" oninput="FRAMEWORK_STATE.customFramework=this.value;saveFrameworkState();" />`
+          : "";
+        const enabledCount = FRAMEWORK_STATE.techStack.filter((i) => i.enabled).length;
+
+        const categorySections = STACK_CATEGORIES.map((cat) => {
+          const items = FRAMEWORK_STATE.techStack.filter((i) => i.category === cat);
+          if (!items.length) return "";
+          const rows = items.map((item) => {
+            const safeId = item.id.replace(/[^a-zA-Z0-9_]/g, "_");
+            const delBtn = item.custom
+              ? `<button class="fw-stack-del-btn" title="Remove" onclick="removeStackItem('${item.id}')">×</button>`
+              : "";
+            const targetBtn = cat === "Frontend"
+              ? `<button class="fw-target-btn${FRAMEWORK_STATE.framework === item.id ? " active" : ""}" onclick="setFramework('${item.id}')">${FRAMEWORK_STATE.framework === item.id ? "Target" : "Set Target"}</button>`
+              : "";
+            return `<div class="fw-stack-row${item.enabled ? " fw-enabled" : ""}" id="fw-row-${safeId}">
+              <label class="fw-stack-toggle">
+                <input type="checkbox" ${item.enabled ? "checked" : ""} onchange="toggleStackItem('${item.id}',this.checked)" />
+                <span class="slider"></span>
+              </label>
+              <span class="fw-stack-icon">${item.icon}</span>
+              <div class="fw-stack-info">
+                <span class="fw-stack-name">${escHtml(item.name)}</span>
+                <span class="fw-stack-desc">${escHtml(item.description)}</span>
+              </div>
+              <input class="fw-stack-version-input" placeholder="version" value="${escHtml(item.version)}"
+                oninput="updateStackVersion('${item.id}',this.value)" title="Version (optional)" />
+              ${targetBtn}
+              ${delBtn}
+            </div>`;
+          }).join("");
+          const catId = cat.replace(/\s/g, "_");
+          // If this is the Frontend section, show the custom input (for 'other') under the header
+          const preHdr = cat === "Frontend" && customInput ? `<div style="margin-top:8px">${customInput}</div>` : "";
+          return `<div class="fw-section">
+            <div class="fw-section-hdr">
+              <span class="fw-section-title">${cat}</span>
+            </div>
+            ${preHdr}
+            <div class="fw-stack-grid">
+              ${rows}
+            </div>
+            <div class="fw-add-row">
+              <input class="fw-add-input" id="fw-add-input-${catId}" placeholder="Add custom item…" onkeydown="if(event.key==='Enter')addStackItem('${cat}',this)" />
+              <button class="conn-add-btn" onclick="addStackItem('${cat}',document.getElementById('fw-add-input-${catId}'))">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add
+              </button>
+            </div>
+          </div>`;
+        }).join("");
+
+        el.innerHTML = `
+          <div class="fw-pane-topbar">
+            <span class="fw-pane-topbar-label">Tech Stack &amp; Framework</span>
+            <span class="conn-count-badge" style="margin-left:auto">${enabledCount} enabled</span>
+          </div>
+          <div class="fw-pane-scroll">
+            <div class="fw-selector-section">
+              <div class="fw-selector-label">Target Framework</div>
+              <div style="font-size:12px;color:var(--tx3)">Pick a frontend item below and click <strong>Target</strong> to set the target framework.</div>
+            </div>
+            ${categorySections}
+          </div>
+          <div class="fw-pane-footer">
+            <span class="fw-pane-footer-info">${enabledCount} stack item${enabledCount !== 1 ? "s" : ""} enabled · changes reflect in Agent Prompt automatically</span>
+            <button class="foot-btn" onclick="syncPromptFromFramework()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Sync to Agent Prompt
+            </button>
+          </div>`;
+      }
+
+      function setFramework(fw) {
+        if (!fw) return;
+        if (fw === "other") {
+          FRAMEWORK_STATE.framework = "other";
+          saveFrameworkState();
+          renderFrameworkPane();
+          return;
+        }
+        // Try direct match by id
+        let item = FRAMEWORK_STATE.techStack.find((i) => i.id === fw);
+        // Try normalized match (strip non-alnum)
+        if (!item) {
+          const norm = String(fw).replace(/[^a-zA-Z0-9_]/g, "").toLowerCase();
+          item = FRAMEWORK_STATE.techStack.find((i) => i.id.toLowerCase() === norm);
+        }
+        if (item) {
+          FRAMEWORK_STATE.framework = item.id;
+          item.enabled = true;
+        } else {
+          // Unknown value — store as-is (fallback)
+          FRAMEWORK_STATE.framework = fw;
+        }
+        saveFrameworkState();
+        renderFrameworkPane();
+      }
+
+      function toggleStackItem(id, checked) {
+        const item = FRAMEWORK_STATE.techStack.find((i) => i.id === id);
+        if (!item) return;
+        item.enabled = checked;
+        saveFrameworkState();
+        const safeId = id.replace(/[^a-zA-Z0-9_]/g, "_");
+        const row = document.getElementById("fw-row-" + safeId);
+        if (row) {
+          if (checked) row.classList.add("fw-enabled");
+          else row.classList.remove("fw-enabled");
+        }
+        // Update badge counts
+        const enabledCount = FRAMEWORK_STATE.techStack.filter((i) => i.enabled).length;
+        document.querySelectorAll("#framework-out .conn-count-badge").forEach(
+          (b) => (b.textContent = enabledCount + " enabled")
+        );
+        document.querySelectorAll("#framework-out .fw-pane-footer-info").forEach(
+          (b) => (b.textContent = `${enabledCount} stack item${enabledCount !== 1 ? "s" : ""} enabled · changes reflect in Agent Prompt automatically`)
+        );
+      }
+
+      function updateStackVersion(id, val) {
+        const item = FRAMEWORK_STATE.techStack.find((i) => i.id === id);
+        if (item) item.version = val;
+        saveFrameworkState();
+      }
+
+      function addStackItem(category, inputEl) {
+        const name = inputEl.value.trim();
+        if (!name) return;
+        const id = "custom_" + Date.now();
+        FRAMEWORK_STATE.techStack.push({
+          id, category, icon: "🔧", name, version: "", enabled: true,
+          description: "Custom stack item", custom: true,
+        });
+        inputEl.value = "";
+        saveFrameworkState();
+        renderFrameworkPane();
+      }
+
+      function removeStackItem(id) {
+        FRAMEWORK_STATE.techStack = FRAMEWORK_STATE.techStack.filter((i) => i.id !== id);
+        saveFrameworkState();
+        renderFrameworkPane();
+      }
+
+      function syncPromptFromFramework() {
+        const _d = SCHEMA || {};
+        PROMPT = buildPrompt(_d);
+        renderPrompt(_d);
+        const allTabs = Array.from(document.querySelectorAll(".tab"));
+        allTabs.forEach((t) => t.classList.remove("active"));
+        const promptTab = allTabs.find((t) =>
+          /switchTab\('prompt'/.test(t.getAttribute("onclick") || ""),
+        );
+        if (promptTab) promptTab.classList.add("active");
+        document.querySelectorAll(".pane").forEach((p) => p.classList.remove("active"));
+        document.getElementById("pane-prompt")?.classList.add("active");
+      }
+
+
       function copyForAI(btn) {
         const _s = SCHEMA || {};
 
@@ -10345,9 +11653,9 @@ if (document.readyState === 'loading') {
           ? `design-memory-${meta.file_key}`
           : "design-memory";
         const fw =
-          CONNECTOR_STATE.framework === "other"
-            ? CONNECTOR_STATE.customFramework || "other"
-            : CONNECTOR_STATE.framework;
+          FRAMEWORK_STATE.framework === "other"
+            ? FRAMEWORK_STATE.customFramework || "other"
+            : FRAMEWORK_STATE.framework;
         const enabledComps = Object.values(CONNECTOR_STATE.components).filter(
           (c) => c.enabled,
         );

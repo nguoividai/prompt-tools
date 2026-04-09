@@ -1,0 +1,16 @@
+# Dependencies
+mcp-server/node_modules/
+
+# Config (may contain sensitive/personal data)
+prompt-tools-config.json
+
+# Design exports
+*.zip
+design-memory-*/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

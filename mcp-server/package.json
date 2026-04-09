@@ -1,0 +1,23 @@
+{
+  "name": "prompt-tools-mcp",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "prompt-tools-mcp": "./index.js"
+  },
+  "description": "MCP server exposing the Figma design prompt engine to Claude Code",
+  "scripts": {
+    "start": "node scripts/start-all.js",
+    "start-all": "node scripts/start-all.js",
+    "save-server": "node save-server.js",
+    "save-server:custom": "node save-server.js --port 7842 --file .agent-prompt/current.md"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.15.0",
+    "jszip": "^3.10.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "prompt-tools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "d:\\prompt-tools\\mcp-server"
+      ]
+    }
+  }
+}
