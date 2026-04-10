@@ -273,6 +273,8 @@ export function buildFrameworkSection(state) {
 
 export function buildPersonalitySection(state) {
   const AGENTS_STATE = state.agents || {};
+  // Respect explicit opt-out: if includeInPrompt is false, omit Agents section
+  if (AGENTS_STATE.includeInPrompt === false) return '';
 
   // Apply same defaults as the HTML when config is empty
   const m = AGENTS_STATE.masterAgent || {

@@ -2898,6 +2898,186 @@
         margin: 0;
       }
 
+      /* ── Hooks pane ── */
+      .hooks-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 20px;
+        height: 100%;
+        box-sizing: border-box;
+        overflow-y: auto;
+      }
+      .hooks-layout::-webkit-scrollbar { width: 6px; }
+      .hooks-layout::-webkit-scrollbar-track { background: transparent; }
+      .hooks-layout::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 3px; }
+      .hooks-header { margin-bottom: 20px; }
+      .hooks-header-title { font-size: 15px; font-weight: 600; color: var(--tx); margin-bottom: 4px; }
+      .hooks-header-sub { font-size: 12px; color: var(--tx2); line-height: 1.6; }
+
+      /* pipeline flow */
+      .hooks-pipeline {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-bottom: 20px;
+      }
+      .hooks-phase {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 0 16px;
+        position: relative;
+      }
+      /* vertical connector line between phases */
+      .hooks-phase:not(:last-child) .hooks-phase-left::after {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: calc(100% - 0px);
+        width: 2px;
+        height: 24px;
+        background: var(--b2);
+        z-index: 0;
+      }
+      .hooks-phase-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 0 10px;
+        position: relative;
+      }
+      .hooks-phase-dot {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--s3);
+        border: 2px solid var(--b2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        z-index: 1;
+        position: relative;
+        flex-shrink: 0;
+        margin-bottom: 6px;
+      }
+      .hooks-phase-dot.active { border-color: var(--ac); background: var(--ac3); }
+      .hooks-phase-dot.readonly { border-color: var(--b3); background: var(--s2); }
+      .hooks-phase-name {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--tx3);
+        line-height: 1.3;
+        white-space: nowrap;
+      }
+      .hooks-phase-name.active { color: var(--ac); }
+      .hooks-phase-card {
+        background: var(--s2);
+        border: 1px solid var(--b1);
+        border-radius: var(--r);
+        padding: 10px 14px;
+        margin-bottom: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: border-color 0.15s;
+      }
+      .hooks-phase-card.configurable { border-color: var(--b2); }
+      .hooks-phase-card.configurable:focus-within { border-color: var(--ac); }
+      .hooks-phase-card.readonly {
+        opacity: 0.55;
+        background: var(--s2);
+        border-style: dashed;
+      }
+      .hooks-phase-desc {
+        font-size: 11px;
+        color: var(--tx2);
+        line-height: 1.5;
+      }
+      /* hook pills row */
+      .hooks-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        min-height: 28px;
+      }
+      .hook-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px 3px 8px;
+        border-radius: 20px;
+        border: 1px solid var(--b2);
+        background: var(--s3);
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--tx2);
+        cursor: pointer;
+        user-select: none;
+        transition: border-color 0.12s, background 0.12s, color 0.12s;
+        position: relative;
+      }
+      .hook-pill:hover { border-color: var(--b3); color: var(--tx); }
+      .hook-pill.enabled {
+        background: var(--ac3);
+        border-color: var(--ac);
+        color: var(--ac);
+      }
+      .hook-pill.enabled .pill-dot { background: var(--ac); }
+      .pill-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--b3);
+        flex-shrink: 0;
+        transition: background 0.12s;
+      }
+      /* reorder arrows */
+      .pill-order {
+        display: inline-flex;
+        gap: 1px;
+        margin-left: 4px;
+      }
+      .pill-order button {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0 1px;
+        font-size: 9px;
+        opacity: 0.5;
+        line-height: 1;
+      }
+      .pill-order button:hover { opacity: 1; }
+      /* readonly phase badge */
+      .hooks-phase-badge {
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        background: var(--s3);
+        color: var(--tx3);
+        border: 1px solid var(--b2);
+        display: inline-block;
+      }
+      /* output block */
+      .hooks-output-block {
+        background: var(--s3);
+        border: 1px solid var(--b2);
+        border-radius: var(--r);
+        padding: 12px 14px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--tx2);
+        white-space: pre;
+        overflow-x: auto;
+        line-height: 1.7;
+      }
+      .hooks-output-block::-webkit-scrollbar { height: 4px; }
+      .hooks-output-block::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 2px; }
+
       /* ── Business pane ── */
       .biz-layout {
         display: flex;
@@ -3459,6 +3639,7 @@
             </div>
             <div class="tab" onclick="switchTab('summary', this)">Summary</div>
             <div class="tab" onclick="switchTab('settings', this)">Settings</div>
+            <div class="tab" onclick="switchTab('hooks', this)">Hooks</div>
             <div class="tab" onclick="switchTab('preview', this)">Preview</div>
           </div>
 
@@ -3731,6 +3912,32 @@
                     <span style="font-size:10px;color:var(--tx3);font-family:var(--mono)" id="stg-json-size"></span>
                   </div>
                   <textarea id="settings-json" style="flex:1;width:100%;background:var(--s2);border:1px solid var(--b2);color:var(--tx);padding:12px;border-radius:8px;font-family:var(--mono);font-size:11px;resize:vertical;box-sizing:border-box;min-height:180px"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hooks pane -->
+            <div class="pane" id="pane-hooks">
+              <div class="hooks-layout">
+                <!-- Header -->
+                <div class="hooks-header">
+                  <div class="hooks-header-title">Hook Pipeline</div>
+                  <div class="hooks-header-sub">Toggle and reorder hooks for each phase of the execution lifecycle. Changes update the <code style="font-family:var(--mono);font-size:11px;background:var(--s3);padding:1px 5px;border-radius:4px">HOOK_CONFIG</code> block in <code style="font-family:var(--mono);font-size:11px;background:var(--s3);padding:1px 5px;border-radius:4px">index.js</code> automatically.</div>
+                </div>
+
+                <!-- Pipeline -->
+                <div class="hooks-pipeline" id="hooks-pipeline"></div>
+
+                <!-- Output -->
+                <div>
+                  <div class="stg-section-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span>HOOK_CONFIG — ready to paste into index.js</span>
+                    <button class="btn btn-ghost" style="padding:3px 10px;font-size:10px" onclick="copyHookConfig(this)">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      Copy
+                    </button>
+                  </div>
+                  <div class="hooks-output-block" id="hooks-output"></div>
                 </div>
               </div>
             </div>
@@ -5615,6 +5822,244 @@ await anthropic.messages.create({
         return `<div class="summary-row"><span class="summary-key">${k}</span><span class="summary-val">${v ?? "—"}</span></div>`;
       }
 
+      // ─── Hooks State ─────────────────────────────────────────────────────────
+
+      const HOOKS_STORAGE_KEY = 'prompt_tools_hooks_v1';
+
+      /**
+       * All hooks available in the registry, with metadata.
+       * enabled:   default on/off
+       * desc:      tooltip / description shown in the UI
+       */
+      const HOOKS_CATALOG = {
+        before_hook: [
+          { id: 'rewrite_query',  label: 'rewrite_query',  enabled: true,  desc: 'Trims whitespace and normalises path separators in all string args.' },
+          { id: 'inject_context', label: 'inject_context', enabled: true,  desc: 'Stamps a unique requestId and ISO timestamp onto the request context.' },
+        ],
+        tool_hook: [
+          { id: 'validate_input', label: 'validate_input', enabled: true,  desc: 'Aborts early if max_chars / offset / path args have wrong types or ranges.' },
+          { id: 'rate_limit',     label: 'rate_limit',     enabled: true,  desc: 'Warns on stderr when the same tool is called in < 100 ms intervals.' },
+          { id: 'audit_log',      label: 'audit_log',      enabled: true,  desc: 'Writes a structured JSON audit entry to stderr for every tool call.' },
+        ],
+        after_tool_hook: [
+          { id: 'sanitize_output', label: 'sanitize_output', enabled: true, desc: 'Redacts Bearer tokens and API key patterns from tool output text.' },
+          { id: 'enrich_data',     label: 'enrich_data',     enabled: true, desc: 'Counts output characters and stores them in ctx.meta.outputChars.' },
+        ],
+        after_hook: [
+          { id: 'format_markdown', label: 'format_markdown', enabled: true, desc: 'Collapses 3+ blank lines to 2 and trims trailing whitespace.' },
+          { id: 'add_summary',     label: 'add_summary',     enabled: true, desc: 'Prepends an HTML comment with tool name, requestId, and char count.' },
+        ],
+        session_end_hook: [
+          { id: 'run_playwright_tests', label: 'run_playwright_tests', enabled: false, desc: 'Runs npx playwright test --reporter=json. On failure, appends a structured report and asks the AI to fix and retry. Session only closes when all tests pass.' },
+        ],
+      };
+
+      /** Phases in pipeline order (THINK and TOOL_EXECUTION are fixed / not configurable). */
+      const PIPELINE_PHASES = [
+        { key: 'before_hook',     label: 'BEFORE_HOOK',      icon: '⚙️',  configurable: true,  desc: 'Pre-process and enrich the incoming request before any tool logic runs.' },
+        { key: '_think',          label: 'THINK',            icon: '🧠',  configurable: false, desc: 'Internal reasoning phase — handled by the AI model. Not configurable.' },
+        { key: 'tool_hook',       label: 'TOOL_HOOK',        icon: '🔍',  configurable: true,  desc: 'Validate, rate-limit, and audit-log before each tool execution.' },
+        { key: '_exec',           label: 'TOOL_EXECUTION',   icon: '⚡',  configurable: false, desc: 'The actual MCP tool runs here. Results flow into the next phase.' },
+        { key: 'after_tool_hook', label: 'AFTER_TOOL_HOOK',  icon: '🛡️',  configurable: true,  desc: 'Sanitize and enrich the raw tool output before formatting.' },
+        { key: 'after_hook',       label: 'AFTER_HOOK',         icon: '✨',  configurable: true,  desc: 'Format and summarise the final response before returning to the caller.' },
+        { key: 'session_end_hook', label: 'BEFORE_SESSION_END', icon: '🧪',  configurable: true,  desc: 'Run Playwright tests after the response is ready. If tests fail the AI is asked to fix and retry — session only closes when all tests pass.' },
+      ];
+
+      /** Live state — mirrors HOOKS_CATALOG but mutable. */
+      let HOOK_STATE = {};
+
+      function _defaultHookState() {
+        const s = {};
+        for (const [phase, hooks] of Object.entries(HOOKS_CATALOG)) {
+          s[phase] = hooks.map(h => ({ ...h }));
+        }
+        return s;
+      }
+
+      function loadHookState() {
+        try {
+          const raw = localStorage.getItem(HOOKS_STORAGE_KEY);
+          if (raw) {
+            const saved = JSON.parse(raw);
+            // merge: keep catalog as source of truth for available hooks
+            const s = _defaultHookState();
+            for (const [phase, hooks] of Object.entries(s)) {
+              const savedPhase = saved[phase];
+              if (!Array.isArray(savedPhase)) continue;
+              // reconstruct order from saved, preserving any new hooks not yet in saved
+              const savedOrder = savedPhase.map(h => h.id);
+              const known = new Set(hooks.map(h => h.id));
+              const merged = [];
+              for (const sid of savedOrder) {
+                const def = hooks.find(h => h.id === sid);
+                const sv  = savedPhase.find(h => h.id === sid);
+                if (def && sv) merged.push({ ...def, enabled: !!sv.enabled });
+              }
+              // add any hooks not in saved (new hooks default to enabled)
+              for (const h of hooks) {
+                if (!savedOrder.includes(h.id)) merged.push({ ...h });
+              }
+              s[phase] = merged;
+            }
+            return s;
+          }
+        } catch (_) {}
+        return _defaultHookState();
+      }
+
+      function saveHookState() {
+        localStorage.setItem(HOOKS_STORAGE_KEY, JSON.stringify(HOOK_STATE));
+      }
+
+      function getHookConfig() {
+        const cfg = {};
+        for (const [phase, hooks] of Object.entries(HOOK_STATE)) {
+          cfg[phase] = hooks.filter(h => h.enabled).map(h => h.id);
+        }
+        return cfg;
+      }
+
+      function hookConfigToCode(cfg) {
+        const lines = ['const HOOK_CONFIG = {'];
+        const phases = ['before_hook', 'tool_hook', 'after_tool_hook', 'after_hook', 'session_end_hook'];
+        const maxLen = Math.max(...phases.map(p => p.length));
+        phases.forEach((phase, i) => {
+          const arr = cfg[phase] || [];
+          const pad = ' '.repeat(maxLen - phase.length);
+          const comma = ',';
+          const comment = phase === 'session_end_hook' ? ` // add 'run_playwright_tests' to enable` : '';
+          lines.push(`  ${phase}:${pad} [${arr.map(h => `'${h}'`).join(', ')}]${comma}${comment}`);
+        });
+        lines.push('};');
+        return lines.join('\n');
+      }
+
+      function renderHooksPane() {
+        const pipeline = document.getElementById('hooks-pipeline');
+        if (!pipeline) return;
+        pipeline.innerHTML = '';
+
+        PIPELINE_PHASES.forEach((phase, phaseIdx) => {
+          const isLast = phaseIdx === PIPELINE_PHASES.length - 1;
+          const hooks  = HOOK_STATE[phase.key] || [];
+
+          const phaseEl = document.createElement('div');
+          phaseEl.className = 'hooks-phase';
+
+          // left column: dot + label
+          const leftEl = document.createElement('div');
+          leftEl.className = 'hooks-phase-left';
+
+          const dotEl = document.createElement('div');
+          dotEl.className = 'hooks-phase-dot' + (phase.configurable ? ' active' : ' readonly');
+          dotEl.textContent = phase.icon;
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'hooks-phase-name' + (phase.configurable ? ' active' : '');
+          nameEl.textContent = phase.label;
+
+          leftEl.appendChild(dotEl);
+          leftEl.appendChild(nameEl);
+
+          // connector line — inject via pseudo-element in CSS; here we add a real
+          // bottom spacer so the card has visual breathing room
+          if (!isLast) {
+            const spacer = document.createElement('div');
+            spacer.style.cssText = 'position:absolute;left:14px;top:calc(100% + 0px);width:2px;height:24px;background:var(--b2);z-index:0';
+            leftEl.appendChild(spacer);
+          }
+
+          // right column: card
+          const card = document.createElement('div');
+          card.className = 'hooks-phase-card' + (phase.configurable ? ' configurable' : ' readonly');
+
+          const descEl = document.createElement('div');
+          descEl.className = 'hooks-phase-desc';
+          descEl.textContent = phase.desc;
+          card.appendChild(descEl);
+
+          if (!phase.configurable) {
+            // read-only badge
+            const badge = document.createElement('div');
+            badge.innerHTML = `<span class="hooks-phase-badge">built-in — not configurable</span>`;
+            card.appendChild(badge);
+          } else {
+            // pills
+            const pillsEl = document.createElement('div');
+            pillsEl.className = 'hooks-pills';
+            pillsEl.id = `hooks-pills-${phase.key}`;
+
+            hooks.forEach((hook, hookIdx) => {
+              const pill = document.createElement('div');
+              pill.className = 'hook-pill' + (hook.enabled ? ' enabled' : '');
+              pill.title = hook.desc;
+              pill.setAttribute('data-phase', phase.key);
+              pill.setAttribute('data-hook', hook.id);
+
+              pill.innerHTML = `
+                <span class="pill-dot"></span>
+                ${hook.label}
+                <span class="pill-order">
+                  <button title="Move left" onclick="moveHook('${phase.key}',${hookIdx},-1)">◀</button>
+                  <button title="Move right" onclick="moveHook('${phase.key}',${hookIdx},+1)">▶</button>
+                </span>
+              `;
+
+              pill.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') return; // handled by moveHook
+                toggleHook(phase.key, hook.id);
+              });
+
+              pillsEl.appendChild(pill);
+            });
+
+            card.appendChild(pillsEl);
+          }
+
+          phaseEl.appendChild(leftEl);
+          phaseEl.appendChild(card);
+          pipeline.appendChild(phaseEl);
+        });
+
+        updateHooksOutput();
+      }
+
+      function toggleHook(phaseKey, hookId) {
+        const hook = (HOOK_STATE[phaseKey] || []).find(h => h.id === hookId);
+        if (!hook) return;
+        hook.enabled = !hook.enabled;
+        saveHookState();
+        renderHooksPane();
+      }
+
+      function moveHook(phaseKey, idx, dir) {
+        const arr = HOOK_STATE[phaseKey];
+        if (!arr) return;
+        const newIdx = idx + dir;
+        if (newIdx < 0 || newIdx >= arr.length) return;
+        [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+        saveHookState();
+        renderHooksPane();
+      }
+
+      function updateHooksOutput() {
+        const out = document.getElementById('hooks-output');
+        if (!out) return;
+        out.textContent = hookConfigToCode(getHookConfig());
+      }
+
+      function copyHookConfig(btn) {
+        const code = hookConfigToCode(getHookConfig());
+        navigator.clipboard.writeText(code).then(() => {
+          const orig = btn.innerHTML;
+          btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+        });
+      }
+
+      // ─────────────────────────────────────────────────────────────────────────
+
       /* ── Tab switching ── */
       function switchTab(id, el) {
         document
@@ -5633,6 +6078,7 @@ await anthropic.messages.create({
         if (id === "personality" && !_personalityPaneReady) { renderPersonalityPane(); _personalityPaneReady = true; }
         if (id === "business") renderBusinessPane();
         if (id === "settings") renderSettingsPane();
+        if (id === "hooks") renderHooksPane();
         if (id === "prompt") {
           const _d = SCHEMA || {};
           if (!PROMPT) { PROMPT = buildPrompt(_d); _promptDirty = true; }
@@ -5657,6 +6103,7 @@ await anthropic.messages.create({
         if (id === "codebase") renderCodebasePane();
         if (id === "business") renderBusinessPane();
         if (id === "settings") renderSettingsPane();
+        if (id === "hooks") renderHooksPane();
       }
 
       /* ── Actions ── */
@@ -5738,6 +6185,7 @@ await anthropic.messages.create({
             templates: TEMPLATE_STATE.templates,
             caseStudies: TEMPLATE_STATE.caseStudies,
           },
+          hooks: getHookConfig(),
         };
       }
 
@@ -5909,7 +6357,26 @@ await anthropic.messages.create({
             TEMPLATE_STATE.selectedSections = cfg.templates.selectedSections || TEMPLATE_STATE.selectedSections;
             TEMPLATE_STATE.templates = cfg.templates.templates || TEMPLATE_STATE.templates;
             TEMPLATE_STATE.caseStudies = cfg.templates.caseStudies || TEMPLATE_STATE.caseStudies;
+            saveTemplateState();
             renderTemplatePane();
+          }
+          if (cfg.hooks) {
+            for (const [phase, ids] of Object.entries(cfg.hooks)) {
+              if (!Array.isArray(ids) || !HOOK_STATE[phase]) continue;
+              // reorder enabled hooks to match saved order, disable ones not listed
+              const reordered = [];
+              for (const id of ids) {
+                const h = HOOK_STATE[phase].find(x => x.id === id);
+                if (h) reordered.push({ ...h, enabled: true });
+              }
+              // append any known hooks not in the saved list (disabled)
+              for (const h of HOOK_STATE[phase]) {
+                if (!ids.includes(h.id)) reordered.push({ ...h, enabled: false });
+              }
+              HOOK_STATE[phase] = reordered;
+            }
+            saveHookState();
+            renderHooksPane();
           }
           schedulePromptRebuild();
         } catch (err) {
@@ -6125,6 +6592,28 @@ await anthropic.messages.create({
         templates: {}, // { key: { key, name, file, description, slots, components, mixins, replacePattern, hint, content, type, folder } }
         caseStudies: {}, // { key: { key, name, content, folder, templateKeys[], selected } }
       };
+
+      function saveTemplateState() {
+        try {
+          localStorage.setItem('template_state_v1', JSON.stringify({
+            selected: TEMPLATE_STATE.selected,
+            selectedSections: TEMPLATE_STATE.selectedSections,
+          }));
+        } catch (_) {}
+      }
+
+      function loadTemplateState() {
+        try {
+          const saved = localStorage.getItem('template_state_v1');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            TEMPLATE_STATE.selected = parsed.selected || null;
+            TEMPLATE_STATE.selectedSections = parsed.selectedSections || [];
+            return true;
+          }
+        } catch (_) {}
+        return false;
+      }
 
       const BUILTIN_TEMPLATES = {
         jlSettingPage: {
@@ -7356,7 +7845,7 @@ Use this as a template for future listing pages—copy, adapt column config, upd
           name: "SupplierReturnNotes_CaseStudy.md",
           folder: "jlListingPage",
           templateKeys: ["jlListingPage"],
-          selected: true,
+          selected: false,
           content: `# Supplier Return Notes Listing Page — Case Study & Reference Guide
 
 **Date**: April 3, 2026
@@ -8123,6 +8612,7 @@ if (document.readyState === 'loading') {
       let AGENTS_STATE = {
         teamName: "Dev Pipeline",
         teamMode: "sequential",
+        includeInPrompt: true,
         masterAgent: _makeMasterAgent(),
         agents: [_makeAgent("innovator")],
       };
@@ -8132,6 +8622,8 @@ if (document.readyState === 'loading') {
           const saved = localStorage.getItem("agents_state_v3");
           if (saved) {
             const parsed = JSON.parse(saved);
+            // Ensure explicit includeInPrompt flag exists (default: true)
+            if (parsed.includeInPrompt === undefined) parsed.includeInPrompt = true;
             // Ensure masterAgent exists (migration from v3 without it)
             if (!parsed.masterAgent) parsed.masterAgent = _makeMasterAgent();
             // Ensure each sub-agent has taskName / instructionScope
@@ -8161,6 +8653,7 @@ if (document.readyState === 'loading') {
             return {
               teamName: o.teamName || "Dev Pipeline",
               teamMode: o.teamMode || "sequential",
+              includeInPrompt: true,
               masterAgent,
               agents: subAgents.length ? subAgents : [_makeAgent("innovator")],
             };
@@ -8172,6 +8665,7 @@ if (document.readyState === 'loading') {
             return {
               teamName: "Dev Pipeline",
               teamMode: "sequential",
+              includeInPrompt: true,
               masterAgent: _makeMasterAgent(),
               agents: [{
                 id: "agent-migrated",
@@ -8327,9 +8821,15 @@ if (document.readyState === 'loading') {
         if (!a.instructionScope) a.instructionScope = "generate-code";
       });
 
+      // Load template state from localStorage
+      loadTemplateState();
+
       let CODEBASE_STATE = {
         ...loadCodebaseState(),
       };
+
+      // ── Boot: init hook state from localStorage (after all other states) ──
+      HOOK_STATE = loadHookState();
 
       function buildCodebaseSection() {
         if (!CODEBASE_STATE.enabled || !CODEBASE_STATE.markdown.trim())
@@ -8368,6 +8868,8 @@ if (document.readyState === 'loading') {
 
       function buildPersonalitySection() {
         const m = AGENTS_STATE.masterAgent;
+        // If the user opted out, omit the Agents section from the prompt
+        if (AGENTS_STATE.includeInPrompt === false) return "";
         const enabledAgents = AGENTS_STATE.agents.filter((a) => a.enabled !== false);
 
         const getMissionText = (agent) => {
@@ -9124,6 +9626,14 @@ if (document.readyState === 'loading') {
         <option value="parallel"   ${AGENTS_STATE.teamMode === "parallel"   ? "selected" : ""}>⚡ Parallel — fan-out to all sub-agents</option>
         <option value="specialist" ${AGENTS_STATE.teamMode === "specialist" ? "selected" : ""}>🎯 Specialist — domain ownership</option>
       </select>
+    </div>
+    <div class="agents-team-row" style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <label class="conn-toggle" title="Include Agents in Prompt" style="margin-left:auto">
+        <input type="checkbox" ${AGENTS_STATE.includeInPrompt !== false ? "checked" : ""}
+          onchange="AGENTS_STATE.includeInPrompt=this.checked;savePersonalityState();updatePrompt();document.getElementById('agents-status').textContent=this.checked?'Included in prompt':'Excluded from prompt'" />
+        <span class="slider"></span>
+      </label>
+      <span id="agents-status" style="font-size:10px;font-family:var(--mono);color:var(--tx3)">${AGENTS_STATE.includeInPrompt !== false ? "Included in prompt" : "Excluded from prompt"}</span>
     </div>
     <!-- Pipeline flow hint -->
     <div class="pipeline-flow-hint">
@@ -10928,10 +11438,11 @@ if (document.readyState === 'loading') {
           cs.templateKeys.includes(tmpl.key),
         );
         if (!csItems.length) return "";
+        const _csDisabled = !!(TEMPLATE_STATE.selected && TEMPLATE_STATE.selected !== tmpl.key);
         const rows = csItems
           .map(
             (cs) =>
-              `<div class="tmpl-cs-item"><label style="display:flex;align-items:center;gap:6px;flex:1;cursor:pointer;min-width:0"><input type="checkbox" ${cs.selected ? "checked" : ""} onchange="toggleCaseStudy('${escHtml(cs.key)}', this.checked)"><span class="tmpl-cs-item-name" title="${escHtml(cs.name)}">${escHtml(cs.name)}</span></label><span class="tmpl-cs-item-badge">case study</span><button class="tmpl-cs-view-btn" title="View case study" onclick="openCaseStudyViewer('${escHtml(cs.key)}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>`,
+              `<div class="tmpl-cs-item"><label style="display:flex;align-items:center;gap:6px;flex:1;cursor:${_csDisabled ? 'default' : 'pointer'};min-width:0;opacity:${_csDisabled ? '0.4' : '1'}"><input type="checkbox" ${cs.selected ? "checked" : ""} ${_csDisabled ? "disabled" : ""} onchange="toggleCaseStudy('${escHtml(cs.key)}', this.checked)"><span class="tmpl-cs-item-name" title="${escHtml(cs.name)}">${escHtml(cs.name)}</span></label><span class="tmpl-cs-item-badge">case study</span><button class="tmpl-cs-view-btn" title="View case study" onclick="openCaseStudyViewer('${escHtml(cs.key)}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>`,
           )
           .join("");
         return `<div class="tmpl-case-studies"><div class="tmpl-cs-label">Case Studies</div>${rows}</div>`;
@@ -10949,11 +11460,13 @@ if (document.readyState === 'loading') {
         const cs = TEMPLATE_STATE.caseStudies[csKey];
         if (!cs) return;
         if (!cs.templateKeys.includes(tmplKey)) cs.templateKeys.push(tmplKey);
+        saveTemplateState();
         renderTemplatePane();
       }
 
       function removeCaseStudy(csKey) {
         delete TEMPLATE_STATE.caseStudies[csKey];
+        saveTemplateState();
         renderTemplatePane();
       }
 
@@ -10968,6 +11481,18 @@ if (document.readyState === 'loading') {
           TEMPLATE_STATE.selected =
             TEMPLATE_STATE.selected === key ? null : key;
         }
+        // Auto-check matching case studies, uncheck non-matching ones
+        if (TEMPLATE_STATE.selected === key) {
+          Object.values(TEMPLATE_STATE.caseStudies).forEach((cs) => {
+            cs.selected = cs.templateKeys.includes(key);
+          });
+        } else {
+          // Template was deselected — uncheck all case studies
+          Object.values(TEMPLATE_STATE.caseStudies).forEach((cs) => {
+            cs.selected = false;
+          });
+        }
+        saveTemplateState();
         renderTemplatePane();
         PROMPT = buildPrompt(SCHEMA || {});
         const pageTmpl = TEMPLATE_STATE.selected
@@ -10986,6 +11511,7 @@ if (document.readyState === 'loading') {
       function toggleCaseStudy(csKey, checked) {
         if (TEMPLATE_STATE.caseStudies[csKey]) {
           TEMPLATE_STATE.caseStudies[csKey].selected = checked;
+          saveTemplateState();
           PROMPT = buildPrompt(SCHEMA || {});
           if (SCHEMA) renderPrompt(SCHEMA);
         }
@@ -11839,15 +12365,12 @@ Replace pattern: every \`${selectedTmpl.replacePattern || "@@REPLACE@@"}\` → $
             .join("");
         }
         let caseStudyBlocks = "";
-        if (selectedTmpl) caseStudyBlocks += _csBuildForKey(selectedTmpl.key);
-        for (const secTmpl of selectedSectionTmpls)
-          caseStudyBlocks += _csBuildForKey(secTmpl.key);
-        // Append any selected case studies not matched to a template
-        Object.values(TEMPLATE_STATE.caseStudies)
-          .filter((cs) => cs.selected && !_injectedCsAI.has(cs.key))
-          .forEach((cs) => {
-            caseStudyBlocks += `\n\n---\n## Reference Case Study · ${cs.name}\n> Use the implementation patterns shown in this case study as a guide.\n> Do NOT copy its entity-specific names, field values, or data — derive everything from the design data above.\n\n${cs.content.trim()}`;
-          });
+        // Case studies are only included if parent templates are selected
+        if (_anyTmpl3) {
+          if (selectedTmpl) caseStudyBlocks += _csBuildForKey(selectedTmpl.key);
+          for (const secTmpl of selectedSectionTmpls)
+            caseStudyBlocks += _csBuildForKey(secTmpl.key);
+        }
 
         // ── Rules ──
         const hierarchyLine = _anyTmpl3
