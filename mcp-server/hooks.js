@@ -24,17 +24,17 @@
  * you can add, remove, or reorder them by editing the config object.
  */
 
-import { spawn as _spawn } from 'child_process';
-import { readFileSync, existsSync } from 'fs';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { homedir } from 'os';
+import { spawn as _spawn } from "child_process";
+import { readFileSync, existsSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+import { homedir } from "os";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function expandPath(p) {
   if (!p) return p;
-  if (p === '~' || p.startsWith('~/') || p.startsWith('~\\')) {
+  if (p === "~" || p.startsWith("~/") || p.startsWith("~\\")) {
     return resolve(homedir(), p.slice(2));
   }
   return resolve(p);
@@ -42,9 +42,9 @@ function expandPath(p) {
 
 function firstNonEmptyString(...values) {
   for (const value of values) {
-    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (typeof value === "string" && value.trim()) return value.trim();
   }
-  return '';
+  return "";
 }
 
 // ── Context ───────────────────────────────────────────────────────────────────
@@ -74,9 +74,10 @@ function createContext(toolName, args) {
     initialArgs.user_intent,
     initialArgs.primary_intent,
   );
-  const inferredContextOnly = typeof initialArgs.context_only === 'boolean'
-    ? initialArgs.context_only
-    : toolName === 'get_current_prompt';
+  const inferredContextOnly =
+    typeof initialArgs.context_only === "boolean"
+      ? initialArgs.context_only
+      : toolName === "get_prompt";
 
   return {
     toolName,
@@ -85,12 +86,12 @@ function createContext(toolName, args) {
     meta: {
       originalGoal: inferredGoal,
       contextOnly: inferredContextOnly,
-      contextOnlyExplicit: typeof initialArgs.context_only === 'boolean',
+      contextOnlyExplicit: typeof initialArgs.context_only === "boolean",
     },
     requestId: null,
     requestedAt: null,
     _aborted: false,
-    _abortReason: '',
+    _abortReason: "",
 
     /** Record an internal log entry (not surfaced to the caller). */
     _log(phase, msg) {
@@ -115,15 +116,141 @@ function createContext(toolName, args) {
 const _rateLimitState = {};
 
 function _shouldWrapWithNpx(command) {
-  if (!command || typeof command !== 'string') return false;
+  if (!command || typeof command !== "string") return false;
   const trimmed = command.trim();
   if (!trimmed) return false;
 
   // Keep direct/system CLIs untouched.
-  return !/^(npx|npm|pnpm|yarn|node|git|docker|bash|sh|cmd|powershell|pwsh)\b/i.test(trimmed);
+  return !/^(npx|npm|pnpm|yarn|node|git|docker|bash|sh|cmd|powershell|pwsh)\b/i.test(
+    trimmed,
+  );
 }
 
-// ── Hook Registry ─────────────────────────────────────────────────────────────
+// ── plan_filter helpers ───────────────────────────────────────────────────────
+
+const _PLAN_FILTER_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "the",
+  "and",
+  "or",
+  "but",
+  "in",
+  "on",
+  "at",
+  "to",
+  "for",
+  "of",
+  "with",
+  "by",
+  "from",
+  "is",
+  "it",
+  "as",
+  "be",
+  "was",
+  "are",
+  "were",
+  "has",
+  "have",
+  "had",
+  "do",
+  "does",
+  "did",
+  "not",
+  "that",
+  "this",
+  "these",
+  "those",
+  "can",
+  "will",
+  "would",
+  "should",
+  "could",
+  "may",
+  "might",
+  "shall",
+  "i",
+  "me",
+  "my",
+  "we",
+  "our",
+  "you",
+  "your",
+  "what",
+  "how",
+  "when",
+  "where",
+  "why",
+  "which",
+  "who",
+  "please",
+  "help",
+  "need",
+  "want",
+  "get",
+]);
+
+/** Split markdown text into sections delimited by #–#### headings. */
+function _parsePlanSections(text) {
+  return text
+    .split(/(?=^#{1,4}\s+)/m)
+    .map((raw) => raw.trim())
+    .filter((raw) => raw.length > 0)
+    .map((raw, idx) => {
+      const nl = raw.indexOf("\n");
+      const heading = (nl === -1 ? raw : raw.slice(0, nl)).trim();
+      const body = nl === -1 ? "" : raw.slice(nl + 1).trim();
+      const isHeading = /^#{1,4}\s+/.test(heading);
+      const headingText = isHeading
+        ? heading.replace(/^#+\s*/, "").toLowerCase()
+        : "";
+      return { idx, raw, heading, body, isHeading, headingText, score: 0 };
+    });
+}
+
+/** Extract meaningful keywords from a goal string. */
+function _extractPlanKeywords(goal) {
+  return goal
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9\u00C0-\u024F\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length >= 3 && !_PLAN_FILTER_STOP_WORDS.has(w));
+}
+
+/** Score sections against goal keywords; mutates each section's .score in place. */
+function _scorePlanSections(sections, goalWords) {
+  for (const sec of sections) {
+    if (!sec.isHeading) {
+      sec.score = 0.5;
+      continue;
+    }
+    const searchable = `${sec.headingText} ${sec.body}`.toLowerCase();
+    let score = 0;
+    for (const kw of goalWords) {
+      if (sec.headingText.includes(kw)) score += 3;
+      score += Math.min(searchable.split(kw).length - 1, 5);
+    }
+    sec.score = score / goalWords.length;
+  }
+}
+
+/** Return the subset of sections to keep, guaranteeing ≥ 3 heading sections. */
+function _selectPlanSections(sections) {
+  const headings = sections.filter((s) => s.isHeading);
+  const preambles = sections.filter((s) => !s.isHeading);
+  const maxScore = headings.reduce((m, s) => Math.max(m, s.score), 0);
+
+  const threshold = maxScore * 0.25;
+  const relevant = headings.filter((s) => s.score >= threshold);
+  const pool =
+    relevant.length >= 3
+      ? relevant
+      : [...headings].sort((a, b) => b.score - a.score).slice(0, 3);
+
+  const keptSet = new Set([...preambles, ...pool].map((s) => s.idx));
+  return sections.filter((s) => keptSet.has(s.idx));
+}
 
 /**
  * HOOK_REGISTRY maps hook name → handler function.
@@ -134,7 +261,6 @@ function _shouldWrapWithNpx(command) {
  * Add custom hooks here and reference them in your hook config.
  */
 const HOOK_REGISTRY = {
-
   // ── before_hook ──────────────────────────────────────────────────────────
 
   /**
@@ -143,16 +269,15 @@ const HOOK_REGISTRY = {
    * so downstream code never has to worry about Windows backslashes.
    */
   rewrite_query(ctx) {
-    if (ctx.args && typeof ctx.args === 'object') {
+    if (ctx.args && typeof ctx.args === "object") {
       const normalised = {};
       for (const [key, val] of Object.entries(ctx.args)) {
-        normalised[key] = typeof val === 'string'
-          ? val.trim().replace(/\\/g, '/')
-          : val;
+        normalised[key] =
+          typeof val === "string" ? val.trim().replace(/\\/g, "/") : val;
       }
       ctx.args = normalised;
     }
-    ctx._log('before_hook:rewrite_query', 'Args normalised');
+    ctx._log("before_hook:rewrite_query", "Args normalised");
     return ctx;
   },
 
@@ -164,7 +289,7 @@ const HOOK_REGISTRY = {
   inject_context(ctx) {
     ctx.requestId = `req_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     ctx.requestedAt = new Date().toISOString();
-    ctx._log('before_hook:inject_context', `Request ID: ${ctx.requestId}`);
+    ctx._log("before_hook:inject_context", `Request ID: ${ctx.requestId}`);
     return ctx;
   },
 
@@ -180,33 +305,42 @@ const HOOK_REGISTRY = {
 
     // max_chars must be a non-negative number when provided
     if (args.max_chars !== undefined) {
-      if (typeof args.max_chars !== 'number' || args.max_chars < 0) {
-        ctx.abort('validate_input: max_chars must be a non-negative number');
+      if (typeof args.max_chars !== "number" || args.max_chars < 0) {
+        ctx.abort("validate_input: max_chars must be a non-negative number");
         return ctx;
       }
     }
 
     // offset must be a non-negative number when provided
     if (args.offset !== undefined) {
-      if (typeof args.offset !== 'number' || args.offset < 0) {
-        ctx.abort('validate_input: offset must be a non-negative number');
+      if (typeof args.offset !== "number" || args.offset < 0) {
+        ctx.abort("validate_input: offset must be a non-negative number");
         return ctx;
       }
     }
 
     // build_design_prompt: design_zip / design_folder paths must be strings if given
-    if (toolName === 'build_design_prompt') {
-      if (args.design_zip !== undefined && typeof args.design_zip !== 'string') {
-        ctx.abort('validate_input: design_zip must be a string path');
+    if (toolName === "build_design_prompt") {
+      if (
+        args.design_zip !== undefined &&
+        typeof args.design_zip !== "string"
+      ) {
+        ctx.abort("validate_input: design_zip must be a string path");
         return ctx;
       }
-      if (args.design_folder !== undefined && typeof args.design_folder !== 'string') {
-        ctx.abort('validate_input: design_folder must be a string path');
+      if (
+        args.design_folder !== undefined &&
+        typeof args.design_folder !== "string"
+      ) {
+        ctx.abort("validate_input: design_folder must be a string path");
         return ctx;
       }
     }
 
-    ctx._log('tool_hook:validate_input', `Validation passed for tool "${toolName}"`);
+    ctx._log(
+      "tool_hook:validate_input",
+      `Validation passed for tool "${toolName}"`,
+    );
     return ctx;
   },
 
@@ -224,7 +358,7 @@ const HOOK_REGISTRY = {
 
     if (elapsed < MIN_INTERVAL_MS) {
       ctx._log(
-        'tool_hook:rate_limit',
+        "tool_hook:rate_limit",
         `Warning: ${ctx.toolName} called ${elapsed}ms after last call (min ${MIN_INTERVAL_MS}ms)`,
       );
     }
@@ -240,13 +374,13 @@ const HOOK_REGISTRY = {
    */
   audit_log(ctx) {
     const entry = {
-      requestId: ctx.requestId ?? 'unknown',
+      requestId: ctx.requestId ?? "unknown",
       timestamp: ctx.requestedAt ?? new Date().toISOString(),
       tool: ctx.toolName,
       argsKeys: Object.keys(ctx.args),
     };
     process.stderr.write(`[audit] ${JSON.stringify(entry)}\n`);
-    ctx._log('tool_hook:audit_log', `Logged: ${entry.requestId}`);
+    ctx._log("tool_hook:audit_log", `Logged: ${entry.requestId}`);
     return ctx;
   },
 
@@ -260,12 +394,12 @@ const HOOK_REGISTRY = {
   sanitize_output(ctx) {
     if (!ctx.toolResult?.content) return ctx;
 
-    ctx.toolResult.content = ctx.toolResult.content.map(item => {
-      if (item.type !== 'text' || typeof item.text !== 'string') return item;
+    ctx.toolResult.content = ctx.toolResult.content.map((item) => {
+      if (item.type !== "text" || typeof item.text !== "string") return item;
 
       const sanitized = item.text
         // Bearer tokens
-        .replace(/Bearer\s+[A-Za-z0-9\-._~+/]+=*/g, 'Bearer [REDACTED]')
+        .replace(/Bearer\s+[A-Za-z0-9\-._~+/]+=*/g, "Bearer [REDACTED]")
         // Inline API key assignments  (api_key="…", apiKey: "…", etc.)
         .replace(
           /\b(api[_-]?key|apikey|secret|token)\s*[:=]\s*["']?[A-Za-z0-9\-_]{16,}["']?/gi,
@@ -275,7 +409,7 @@ const HOOK_REGISTRY = {
       return { ...item, text: sanitized };
     });
 
-    ctx._log('after_tool_hook:sanitize_output', 'Secrets redacted');
+    ctx._log("after_tool_hook:sanitize_output", "Secrets redacted");
     return ctx;
   },
 
@@ -288,11 +422,127 @@ const HOOK_REGISTRY = {
     if (!ctx.toolResult?.content || ctx.toolResult?.isError) return ctx;
 
     const totalChars = ctx.toolResult.content
-      .filter(i => i.type === 'text')
+      .filter((i) => i.type === "text")
       .reduce((sum, i) => sum + (i.text?.length ?? 0), 0);
 
     ctx.meta.outputChars = totalChars;
-    ctx._log('after_tool_hook:enrich_data', `Output: ${totalChars} chars`);
+    ctx._log("after_tool_hook:enrich_data", `Output: ${totalChars} chars`);
+    return ctx;
+  },
+
+  /**
+   * plan_filter
+   * Before returning tool output, analyse the fetched content against the
+   * user's stated goal and keep only the sections most relevant to that goal.
+   * This significantly reduces token usage when current.md is large and the
+   * user's need is specific.
+   *
+   * Activation conditions (all must hold):
+   *   - tool is get_current_prompt
+   *   - ctx.meta.originalGoal is a non-empty string
+   *   - result is not an error
+   *   - content parses into at least 3 sections
+   *   - at least one keyword from the goal matches a section
+   *   - filtering would remove ≥ 2 sections (minimum gain threshold)
+   *
+   * When none of the above hold the hook is a no-op and the full content is
+   * returned unchanged.
+   *
+   * Writes to ctx.meta:
+   *   ctx.meta.planFilter — { totalSections, keptSections, originalChars,
+   *                           filteredChars, reductionPct, goalKeywords }
+   */
+  plan_filter(ctx) {
+    if (ctx.toolName !== "get_prompt" || ctx.meta.planMode === true) return ctx;
+    if (!ctx.toolResult?.content || ctx.toolResult?.isError) return ctx;
+
+    const goal = (ctx.meta.originalGoal || "").trim();
+    if (!goal) {
+      ctx._log(
+        "after_tool_hook:plan_filter",
+        "Skipped: no original_goal provided",
+      );
+      return ctx;
+    }
+
+    const textItem = ctx.toolResult.content.find((i) => i.type === "text");
+    if (!textItem?.text) return ctx;
+
+    const fullText = textItem.text;
+
+    // ── Parse, score, and select ────────────────────────────────────────────
+    const sections = _parsePlanSections(fullText);
+    if (sections.length <= 2) {
+      ctx._log(
+        "after_tool_hook:plan_filter",
+        `Skipped: only ${sections.length} section(s) — not worth filtering`,
+      );
+      return ctx;
+    }
+
+    const goalWords = _extractPlanKeywords(goal);
+    if (goalWords.length === 0) {
+      ctx._log(
+        "after_tool_hook:plan_filter",
+        "Skipped: no meaningful keywords extracted from goal",
+      );
+      return ctx;
+    }
+
+    _scorePlanSections(sections, goalWords);
+
+    const headings = sections.filter((s) => s.isHeading);
+    const maxScore = headings.reduce((m, s) => Math.max(m, s.score), 0);
+    if (maxScore === 0) {
+      ctx._log(
+        "after_tool_hook:plan_filter",
+        "Skipped: no keyword matches found in any section",
+      );
+      return ctx;
+    }
+
+    const kept = _selectPlanSections(sections);
+    const removedCount = sections.length - kept.length;
+    if (removedCount < 2) {
+      ctx._log(
+        "after_tool_hook:plan_filter",
+        `Skipped: only ${removedCount} section(s) removed — minimal gain`,
+      );
+      return ctx;
+    }
+
+    // ── Rebuild output ──────────────────────────────────────────────────────
+    const filteredText = kept.map((s) => s.raw).join("\n\n");
+    const originalChars = fullText.length;
+    const filteredChars = filteredText.length;
+    const reductionPct = Math.round((1 - filteredChars / originalChars) * 100);
+
+    const filterNote = [
+      "",
+      "---",
+      `> **Plan filter applied:** Showing ${kept.length} of ${sections.length} sections most relevant to: _"${goal.slice(0, 120)}"_  `,
+      `> Reduced from ${originalChars.toLocaleString()} → ${filteredChars.toLocaleString()} chars (−${reductionPct}%).`,
+      "",
+    ].join("\n");
+
+    ctx.toolResult.content = ctx.toolResult.content.map((item) =>
+      item === textItem ? { ...item, text: filteredText + filterNote } : item,
+    );
+
+    ctx.meta.planFilter = {
+      totalSections: sections.length,
+      keptSections: kept.length,
+      originalChars,
+      filteredChars,
+      reductionPct,
+      goalKeywords: goalWords,
+    };
+
+    ctx._log(
+      "after_tool_hook:plan_filter",
+      `Filtered: ${kept.length}/${sections.length} sections, ${filteredChars}/${originalChars} chars (−${reductionPct}%)`,
+    );
+
     return ctx;
   },
 
@@ -308,44 +558,67 @@ const HOOK_REGISTRY = {
    */
   include_current_prompt(ctx) {
     try {
-      if (ctx.toolName === 'get_current_prompt') {
-        ctx._log('after_tool_hook:include_current_prompt', 'Skipped for get_current_prompt to avoid duplicate prompt content');
+      if (ctx.toolName === "get_prompt") {
+        ctx._log(
+          "after_tool_hook:include_current_prompt",
+          "Skipped for get_prompt to avoid duplicate prompt content",
+        );
         return ctx;
       }
 
-      const argPath = ctx.args && typeof ctx.args.prompt_path === 'string' && ctx.args.prompt_path.trim()
-        ? ctx.args.prompt_path
-        : null;
+      const argPath =
+        ctx.args &&
+        typeof ctx.args.prompt_path === "string" &&
+        ctx.args.prompt_path.trim()
+          ? ctx.args.prompt_path
+          : null;
       const promptPath = argPath
         ? expandPath(argPath)
-        : (process.env.PROMPT_TOOLS_PROMPT_PATH ? expandPath(process.env.PROMPT_TOOLS_PROMPT_PATH) : resolve(__dirname, '.agent-prompt', 'current.md'));
+        : process.env.PROMPT_TOOLS_PROMPT_PATH
+          ? expandPath(process.env.PROMPT_TOOLS_PROMPT_PATH)
+          : resolve(__dirname, ".agent-prompt", "current.md");
 
       if (!existsSync(promptPath)) {
-        ctx._log('after_tool_hook:include_current_prompt', `Prompt not found: ${promptPath}`);
+        ctx._log(
+          "after_tool_hook:include_current_prompt",
+          `Prompt not found: ${promptPath}`,
+        );
         return ctx;
       }
 
-      const content = readFileSync(promptPath, 'utf8');
-      const header = '\n\n---\n## Current Agent Prompt\n\n';
-      const block = header + '```' + '\n' + content + '\n' + '```' + '\n';
+      const content = readFileSync(promptPath, "utf8");
+      const header = "\n\n---\n## Current Agent Prompt\n\n";
+      const block = header + "```" + "\n" + content + "\n" + "```" + "\n";
 
       if (!ctx.toolResult) {
-        ctx.toolResult = { content: [{ type: 'text', text: block }] };
+        ctx.toolResult = { content: [{ type: "text", text: block }] };
       } else {
-        const hasText = Array.isArray(ctx.toolResult.content) && ctx.toolResult.content.some(i => i.type === 'text');
+        const hasText =
+          Array.isArray(ctx.toolResult.content) &&
+          ctx.toolResult.content.some((i) => i.type === "text");
         if (!hasText) {
-          ctx.toolResult.content = [...(ctx.toolResult.content || []), { type: 'text', text: block }];
+          ctx.toolResult.content = [
+            ...(ctx.toolResult.content || []),
+            { type: "text", text: block },
+          ];
         } else {
           ctx.toolResult.content = ctx.toolResult.content.map((item, idx) => {
-            if (idx === 0 && item.type === 'text') return { ...item, text: (item.text || '') + block };
+            if (idx === 0 && item.type === "text")
+              return { ...item, text: (item.text || "") + block };
             return item;
           });
         }
       }
 
-      ctx._log('after_tool_hook:include_current_prompt', `Appended prompt from ${promptPath}`);
+      ctx._log(
+        "after_tool_hook:include_current_prompt",
+        `Appended prompt from ${promptPath}`,
+      );
     } catch (e) {
-      ctx._log('after_tool_hook:include_current_prompt', `Error reading prompt: ${e.message}`);
+      ctx._log(
+        "after_tool_hook:include_current_prompt",
+        `Error reading prompt: ${e.message}`,
+      );
     }
     return ctx;
   },
@@ -360,12 +633,15 @@ const HOOK_REGISTRY = {
   format_markdown(ctx) {
     if (!ctx.toolResult?.content) return ctx;
 
-    ctx.toolResult.content = ctx.toolResult.content.map(item => {
-      if (item.type !== 'text' || typeof item.text !== 'string') return item;
-      return { ...item, text: item.text.replace(/\n{3,}/g, '\n\n').trimEnd() + '\n' };
+    ctx.toolResult.content = ctx.toolResult.content.map((item) => {
+      if (item.type !== "text" || typeof item.text !== "string") return item;
+      return {
+        ...item,
+        text: item.text.replace(/\n{3,}/g, "\n\n").trimEnd() + "\n",
+      };
     });
 
-    ctx._log('after_hook:format_markdown', 'Markdown formatted');
+    ctx._log("after_hook:format_markdown", "Markdown formatted");
     return ctx;
   },
 
@@ -377,31 +653,36 @@ const HOOK_REGISTRY = {
   add_intent_preamble(ctx) {
     if (!ctx.toolResult?.content || ctx.toolResult?.isError) return ctx;
 
-    const goal = typeof ctx.meta.originalGoal === 'string' ? ctx.meta.originalGoal.trim() : '';
+    const goal =
+      typeof ctx.meta.originalGoal === "string"
+        ? ctx.meta.originalGoal.trim()
+        : "";
     const contextOnly = ctx.meta.contextOnly === true;
     const contextOnlyExplicit = ctx.meta.contextOnlyExplicit === true;
 
     if (!goal && !contextOnlyExplicit) return ctx;
 
-    const lines = ['## Retrieval Intent', ''];
+    const lines = ["## Retrieval Intent", ""];
     if (goal) lines.push(`Primary objective: ${goal}`);
     if (contextOnly && (goal || contextOnlyExplicit)) {
-      lines.push('This tool call is for context retrieval only. After reading this output, continue solving the primary objective instead of stopping here.');
+      lines.push(
+        "This tool call is for context retrieval only. After reading this output, continue solving the primary objective instead of stopping here.",
+      );
     }
-    lines.push('');
-    lines.push('---');
-    lines.push('');
+    lines.push("");
+    lines.push("---");
+    lines.push("");
 
-    const preamble = lines.join('\n');
+    const preamble = lines.join("\n");
 
     ctx.toolResult.content = ctx.toolResult.content.map((item, i) => {
-      if (i === 0 && item.type === 'text') {
-        return { ...item, text: preamble + (item.text || '') };
+      if (i === 0 && item.type === "text") {
+        return { ...item, text: preamble + (item.text || "") };
       }
       return item;
     });
 
-    ctx._log('after_hook:add_intent_preamble', 'Intent preamble prepended');
+    ctx._log("after_hook:add_intent_preamble", "Intent preamble prepended");
     return ctx;
   },
 
@@ -416,27 +697,33 @@ const HOOK_REGISTRY = {
 
     // Keep get_current_prompt output fully clean by default.
     // Opt-in only when explicit debugging is requested.
-    if (ctx.toolName === 'get_current_prompt' && ctx.args?.include_meta_comment !== true) {
-      ctx._log('after_hook:add_summary', 'Skipped for get_current_prompt (clean output mode)');
+    if (
+      ctx.toolName === "get_prompt" &&
+      ctx.args?.include_meta_comment !== true
+    ) {
+      ctx._log(
+        "after_hook:add_summary",
+        "Skipped for get_prompt (clean output mode)",
+      );
       return ctx;
     }
 
     const header =
       `<!-- tool:${ctx.toolName}` +
-      ` | req:${ctx.requestId ?? 'n/a'}` +
-      ` | ${ctx.requestedAt ?? ''}` +
-      ` | chars:${ctx.meta.outputChars ?? '?'}` +
+      ` | req:${ctx.requestId ?? "n/a"}` +
+      ` | ${ctx.requestedAt ?? ""}` +
+      ` | chars:${ctx.meta.outputChars ?? "?"}` +
       ` | context_only:${ctx.meta.contextOnly === true}` +
-      ` | goal:${(ctx.meta.originalGoal || '').replace(/-->/g, '').slice(0, 240)} -->\n`;
+      ` | goal:${(ctx.meta.originalGoal || "").replace(/-->/g, "").slice(0, 240)} -->\n`;
 
     ctx.toolResult.content = ctx.toolResult.content.map((item, i) => {
-      if (i === 0 && item.type === 'text') {
+      if (i === 0 && item.type === "text") {
         return { ...item, text: header + item.text };
       }
       return item;
     });
 
-    ctx._log('after_hook:add_summary', 'Summary header prepended');
+    ctx._log("after_hook:add_summary", "Summary header prepended");
     return ctx;
   },
 
@@ -446,10 +733,10 @@ const HOOK_REGISTRY = {
    * run_command
    *
    * Execute an arbitrary CLI command automatically in the MCP pipeline.
-    * Captures stdout/stderr and appends the result to ctx.toolResult.
-    *
-    * By default this hook runs commands through npx so the same MCP server
-    * can execute project-local CLIs across different codebases.
+   * Captures stdout/stderr and appends the result to ctx.toolResult.
+   *
+   * By default this hook runs commands through npx so the same MCP server
+   * can execute project-local CLIs across different codebases.
    *
    * Context args consumed:
    *   ctx.args.cli_command    {string}   — Required: the command to run (e.g., "npm run build" or "yarn test")
@@ -457,10 +744,10 @@ const HOOK_REGISTRY = {
    *   ctx.args.cli_shell      {boolean}  — Optional: use shell for execution (defaults to true on Windows, false on Unix)
    *   ctx.args.cli_timeout    {number}   — Optional: timeout in milliseconds (default: 60000)
    *   ctx.args.cli_show_output {boolean} — Optional: include command output in tool result (default: true)
-    *   ctx.args.cli_use_npx    {boolean}  — Optional: run command via npx (default: true)
+   *   ctx.args.cli_use_npx    {boolean}  — Optional: run command via npx (default: true)
    *
    * Writes to ctx.meta:
-    *   ctx.meta.cliResult      — { code, stdout, stderr, duration, command, executedCommand }
+   *   ctx.meta.cliResult      — { code, stdout, stderr, duration, command, executedCommand }
    *
    * If command fails (non-zero exit code), appends an error report to ctx.toolResult
    * and sets isError: true.
@@ -475,47 +762,64 @@ const HOOK_REGISTRY = {
       cli_use_npx,
     } = ctx.args;
 
-    if (!cli_command || typeof cli_command !== 'string') {
-      ctx._log('session_end_hook:run_command', 'Skipped: cli_command not provided or invalid');
+    if (!cli_command || typeof cli_command !== "string") {
+      ctx._log(
+        "session_end_hook:run_command",
+        "Skipped: cli_command not provided or invalid",
+      );
       return ctx;
     }
 
     const cwd = cli_cwd || process.cwd();
-    const useShell = typeof cli_shell === 'boolean' ? cli_shell : process.platform === 'win32';
-    const timeout = typeof cli_timeout === 'number' ? cli_timeout : 60000;
-    const showOutput = typeof cli_show_output === 'boolean' ? cli_show_output : true;
-    const useNpx = typeof cli_use_npx === 'boolean' ? cli_use_npx : true;
-    const executedCommand = useNpx && _shouldWrapWithNpx(cli_command)
-      ? `npx ${cli_command}`
-      : cli_command;
+    const useShell =
+      typeof cli_shell === "boolean" ? cli_shell : process.platform === "win32";
+    const timeout = typeof cli_timeout === "number" ? cli_timeout : 60000;
+    const showOutput =
+      typeof cli_show_output === "boolean" ? cli_show_output : true;
+    const useNpx = typeof cli_use_npx === "boolean" ? cli_use_npx : true;
+    const executedCommand =
+      useNpx && _shouldWrapWithNpx(cli_command)
+        ? `npx ${cli_command}`
+        : cli_command;
 
-    ctx._log('session_end_hook:run_command', `Running: ${executedCommand} (cwd: ${cwd}, timeout: ${timeout}ms)`);
+    ctx._log(
+      "session_end_hook:run_command",
+      `Running: ${executedCommand} (cwd: ${cwd}, timeout: ${timeout}ms)`,
+    );
 
     const startTime = Date.now();
     const { code, stdout, stderr } = await new Promise((resolve) => {
-      let out = '';
-      let err = '';
+      let out = "";
+      let err = "";
       let timedOut = false;
 
       const child = _spawn(executedCommand, [], {
         cwd,
         shell: useShell,
-        env: { ...process.env, FORCE_COLOR: '0' },
+        env: { ...process.env, FORCE_COLOR: "0" },
       });
 
       const timeoutHandle = setTimeout(() => {
         timedOut = true;
         child.kill();
-        resolve({ code: -1, stdout: out, stderr: `Command timed out after ${timeout}ms` });
+        resolve({
+          code: -1,
+          stdout: out,
+          stderr: `Command timed out after ${timeout}ms`,
+        });
       }, timeout);
 
-      child.stdout?.on('data', (d) => { out += d.toString(); });
-      child.stderr?.on('data', (d) => { err += d.toString(); });
-      child.on('close', (c) => {
+      child.stdout?.on("data", (d) => {
+        out += d.toString();
+      });
+      child.stderr?.on("data", (d) => {
+        err += d.toString();
+      });
+      child.on("close", (c) => {
         clearTimeout(timeoutHandle);
         if (!timedOut) resolve({ code: c ?? 1, stdout: out, stderr: err });
       });
-      child.on('error', (e) => {
+      child.on("error", (e) => {
         clearTimeout(timeoutHandle);
         resolve({ code: 1, stdout: out, stderr: e.message });
       });
@@ -523,61 +827,72 @@ const HOOK_REGISTRY = {
 
     const duration = Date.now() - startTime;
 
-    const result = { code, stdout, stderr, duration, command: cli_command, executedCommand };
+    const result = {
+      code,
+      stdout,
+      stderr,
+      duration,
+      command: cli_command,
+      executedCommand,
+    };
     ctx.meta.cliResult = result;
 
     const success = code === 0;
-    const status = success ? '✅' : '❌';
+    const status = success ? "✅" : "❌";
     const time = (duration / 1000).toFixed(2);
 
-    ctx._log('session_end_hook:run_command',
-      `${status} Command exited with code ${code} (${time}s)`);
+    ctx._log(
+      "session_end_hook:run_command",
+      `${status} Command exited with code ${code} (${time}s)`,
+    );
 
     if (!showOutput) return ctx;
 
     const lines = [
-      '',
-      '---',
-      '## 📋 Command Execution Result',
-      '',
+      "",
+      "---",
+      "## 📋 Command Execution Result",
+      "",
       `| | Value |`,
       `|---|---|`,
-      `| **Status** | ${success ? '✅ Success' : '❌ Failed'} |`,
+      `| **Status** | ${success ? "✅ Success" : "❌ Failed"} |`,
       `| **Command** | \`${cli_command}\` |`,
       `| **Executed As** | \`${executedCommand}\` |`,
       `| **Exit Code** | ${code} |`,
       `| **Duration** | ${time}s |`,
       `| **Directory** | \`${cwd}\` |`,
-      '',
+      "",
     ];
 
     if (stdout.trim()) {
-      lines.push('### 📤 STDOUT');
-      lines.push('```');
+      lines.push("### 📤 STDOUT");
+      lines.push("```");
       lines.push(stdout.trim().slice(0, 2000)); // Truncate to 2000 chars
-      if (stdout.length > 2000) lines.push('... (truncated)');
-      lines.push('```');
-      lines.push('');
+      if (stdout.length > 2000) lines.push("... (truncated)");
+      lines.push("```");
+      lines.push("");
     }
 
     if (stderr.trim()) {
-      lines.push('### 📥 STDERR');
-      lines.push('```');
+      lines.push("### 📥 STDERR");
+      lines.push("```");
       lines.push(stderr.trim().slice(0, 2000)); // Truncate to 2000 chars
-      if (stderr.length > 2000) lines.push('... (truncated)');
-      lines.push('```');
-      lines.push('');
+      if (stderr.length > 2000) lines.push("... (truncated)");
+      lines.push("```");
+      lines.push("");
     }
 
     if (!success) {
-      lines.push('---');
-      lines.push('> **⚠️ Command failed.** Review the error messages above and fix the issue.');
-      lines.push('');
+      lines.push("---");
+      lines.push(
+        "> **⚠️ Command failed.** Review the error messages above and fix the issue.",
+      );
+      lines.push("");
     }
 
-    lines.push('---');
+    lines.push("---");
 
-    const report = lines.join('\n');
+    const report = lines.join("\n");
     _appendCommandResult(ctx, report, !success);
 
     return ctx;
@@ -602,42 +917,65 @@ const HOOK_REGISTRY = {
    *   ctx.meta.playwrightResult  — { passed, total, passCount, failCount, failures[], duration }
    */
   async run_playwright_tests(ctx) {
-    const cwd       = ctx.args?.test_cwd || process.cwd();
+    const cwd = ctx.args?.test_cwd || process.cwd();
     const configArg = ctx.args?.playwright_config;
 
-    const spawnArgs = ['playwright', 'test', '--reporter=json'];
-    if (configArg) spawnArgs.push('--config', configArg);
+    const spawnArgs = ["playwright", "test", "--reporter=json"];
+    if (configArg) spawnArgs.push("--config", configArg);
 
-    ctx._log('session_end_hook:run_playwright_tests', `Running: npx ${spawnArgs.join(' ')} in ${cwd}`);
+    ctx._log(
+      "session_end_hook:run_playwright_tests",
+      `Running: npx ${spawnArgs.join(" ")} in ${cwd}`,
+    );
 
     const { code, stdout, stderr } = await new Promise((resolve) => {
-      const child = _spawn('npx', spawnArgs, {
+      const child = _spawn("npx", spawnArgs, {
         cwd,
-        env: { ...process.env, FORCE_COLOR: '0' },
-        shell: process.platform === 'win32',
+        env: { ...process.env, FORCE_COLOR: "0" },
+        shell: process.platform === "win32",
       });
-      let out = '';
-      let err = '';
-      child.stdout?.on('data', (d) => { out += d.toString(); });
-      child.stderr?.on('data', (d) => { err += d.toString(); });
-      child.on('close', (c) => resolve({ code: c ?? 1, stdout: out, stderr: err }));
-      child.on('error', (e) => resolve({ code: 1, stdout: '', stderr: e.message }));
+      let out = "";
+      let err = "";
+      child.stdout?.on("data", (d) => {
+        out += d.toString();
+      });
+      child.stderr?.on("data", (d) => {
+        err += d.toString();
+      });
+      child.on("close", (c) =>
+        resolve({ code: c ?? 1, stdout: out, stderr: err }),
+      );
+      child.on("error", (e) =>
+        resolve({ code: 1, stdout: "", stderr: e.message }),
+      );
     });
 
     // Playwright JSON reporter writes to stdout; extract the outermost JSON object.
     let report = null;
     const jsonMatch = stdout.match(/(\{[\s\S]*\})\s*$/);
     if (jsonMatch) {
-      try { report = JSON.parse(jsonMatch[1]); } catch (_) {}
+      try {
+        report = JSON.parse(jsonMatch[1]);
+      } catch (_) {}
     }
     if (!report) {
-      try { report = JSON.parse(stdout); } catch (_) {}
+      try {
+        report = JSON.parse(stdout);
+      } catch (_) {}
     }
 
     if (!report) {
       const msg = `Could not parse Playwright JSON output (exit ${code}).\nstderr: ${stderr.slice(0, 400)}`;
-      ctx._log('session_end_hook:run_playwright_tests', msg);
-      _appendTestReport(ctx, { passed: false, total: 0, passCount: 0, failCount: 0, failures: [], parseError: msg, duration: 0 });
+      ctx._log("session_end_hook:run_playwright_tests", msg);
+      _appendTestReport(ctx, {
+        passed: false,
+        total: 0,
+        passCount: 0,
+        failCount: 0,
+        failures: [],
+        parseError: msg,
+        duration: 0,
+      });
       return ctx;
     }
 
@@ -645,19 +983,23 @@ const HOOK_REGISTRY = {
     const failures = [];
     function walkSuites(suites, filePath) {
       for (const suite of suites || []) {
-        const file = suite.file || filePath || '';
+        const file = suite.file || filePath || "";
         for (const spec of suite.specs || []) {
           for (const test of spec.tests || []) {
             const badResult = (test.results || []).find(
-              r => r.status !== 'passed' && r.status !== 'skipped',
+              (r) => r.status !== "passed" && r.status !== "skipped",
             );
             if (badResult) {
               failures.push({
                 file,
                 title: spec.title,
-                status: badResult.status || 'failed',
-                error: badResult.error?.message?.split('\n')[0] || 'unknown error',
-                stack: (badResult.error?.stack || '').split('\n').slice(0, 6).join('\n'),
+                status: badResult.status || "failed",
+                error:
+                  badResult.error?.message?.split("\n")[0] || "unknown error",
+                stack: (badResult.error?.stack || "")
+                  .split("\n")
+                  .slice(0, 6)
+                  .join("\n"),
                 retry: badResult.retry ?? 0,
                 duration: badResult.duration ?? 0,
               });
@@ -669,21 +1011,36 @@ const HOOK_REGISTRY = {
     }
     walkSuites(report.suites);
 
-    const stats    = report.stats || {};
-    const total    = (stats.expected ?? 0) + (stats.unexpected ?? 0) + (stats.skipped ?? 0) + (stats.flaky ?? 0);
-    const passCount = stats.expected  ?? 0;
+    const stats = report.stats || {};
+    const total =
+      (stats.expected ?? 0) +
+      (stats.unexpected ?? 0) +
+      (stats.skipped ?? 0) +
+      (stats.flaky ?? 0);
+    const passCount = stats.expected ?? 0;
     const failCount = stats.unexpected ?? 0;
-    const duration  = stats.duration   ?? 0;
+    const duration = stats.duration ?? 0;
 
-    const result = { passed: failures.length === 0, total, passCount, failCount, failures, duration };
+    const result = {
+      passed: failures.length === 0,
+      total,
+      passCount,
+      failCount,
+      failures,
+      duration,
+    };
     ctx.meta.playwrightResult = result;
 
     if (result.passed) {
-      ctx._log('session_end_hook:run_playwright_tests',
-        `✅ All ${total} test(s) passed in ${(duration / 1000).toFixed(1)}s`);
+      ctx._log(
+        "session_end_hook:run_playwright_tests",
+        `✅ All ${total} test(s) passed in ${(duration / 1000).toFixed(1)}s`,
+      );
     } else {
-      ctx._log('session_end_hook:run_playwright_tests',
-        `❌ ${failCount} of ${total} test(s) failed — appending failure report`);
+      ctx._log(
+        "session_end_hook:run_playwright_tests",
+        `❌ ${failCount} of ${total} test(s) failed — appending failure report`,
+      );
       _appendTestReport(ctx, result);
     }
 
@@ -696,65 +1053,79 @@ const HOOK_REGISTRY = {
  * Called by run_playwright_tests when tests fail.
  */
 function _appendTestReport(ctx, result) {
-  const { total, passCount, failCount, failures, parseError, duration } = result;
+  const { total, passCount, failCount, failures, parseError, duration } =
+    result;
 
   const lines = [
-    '',
-    '---',
-    '## ⚠️ Playwright Test Report — ACTION REQUIRED',
-    '',
+    "",
+    "---",
+    "## ⚠️ Playwright Test Report — ACTION REQUIRED",
+    "",
     `| | Value |`,
     `|---|---|`,
-    `| **Status** | ${parseError ? '❌ Parse error' : failures.length === 0 ? '✅ All passed' : `❌ ${failCount} failed`} |`,
+    `| **Status** | ${parseError ? "❌ Parse error" : failures.length === 0 ? "✅ All passed" : `❌ ${failCount} failed`} |`,
     `| **Total** | ${total} |`,
     `| **Passed** | ${passCount} |`,
     `| **Failed** | ${failCount} |`,
     `| **Duration** | ${(duration / 1000).toFixed(1)}s |`,
-    '',
+    "",
   ];
 
   if (parseError) {
-    lines.push('### ❌ Could not parse test output');
-    lines.push('');
-    lines.push('```');
+    lines.push("### ❌ Could not parse test output");
+    lines.push("");
+    lines.push("```");
     lines.push(parseError);
-    lines.push('```');
+    lines.push("```");
   } else {
     lines.push(`### ❌ Failed Test Cases (${failCount})`);
-    lines.push('');
+    lines.push("");
     failures.forEach((f, i) => {
       lines.push(`#### ${i + 1}. ${f.title}`);
       lines.push(`- **File:** \`${f.file}\``);
-      lines.push(`- **Status:** \`${f.status}\`${f.retry > 0 ? ` _(retry ${f.retry})_` : ''}`);
+      lines.push(
+        `- **Status:** \`${f.status}\`${f.retry > 0 ? ` _(retry ${f.retry})_` : ""}`,
+      );
       lines.push(`- **Error:** ${f.error}`);
       if (f.stack) {
-        lines.push('```');
+        lines.push("```");
         lines.push(f.stack);
-        lines.push('```');
+        lines.push("```");
       }
-      lines.push('');
+      lines.push("");
     });
   }
 
-  lines.push('---');
-  lines.push('> **🔁 Action required:** Fix every failing test case listed above,');
-  lines.push('> then call this tool again. The session will close only when all tests pass.');
-  lines.push('');
+  lines.push("---");
+  lines.push(
+    "> **🔁 Action required:** Fix every failing test case listed above,",
+  );
+  lines.push(
+    "> then call this tool again. The session will close only when all tests pass.",
+  );
+  lines.push("");
 
-  const report = lines.join('\n');
+  const report = lines.join("\n");
 
   if (!ctx.toolResult) {
-    ctx.toolResult = { content: [{ type: 'text', text: report }], isError: true };
+    ctx.toolResult = {
+      content: [{ type: "text", text: report }],
+      isError: true,
+    };
     return;
   }
 
   // Append to first existing text block, or add a new one.
-  const hasText = ctx.toolResult.content?.some(i => i.type === 'text');
+  const hasText = ctx.toolResult.content?.some((i) => i.type === "text");
   if (!hasText) {
-    ctx.toolResult.content = [...(ctx.toolResult.content || []), { type: 'text', text: report }];
+    ctx.toolResult.content = [
+      ...(ctx.toolResult.content || []),
+      { type: "text", text: report },
+    ];
   } else {
     ctx.toolResult.content = ctx.toolResult.content.map((item, idx) => {
-      if (idx === 0 && item.type === 'text') return { ...item, text: item.text + report };
+      if (idx === 0 && item.type === "text")
+        return { ...item, text: item.text + report };
       return item;
     });
   }
@@ -775,7 +1146,7 @@ async function runHooks(hookNames, ctx) {
     if (ctx._aborted) break;
     const fn = HOOK_REGISTRY[name];
     if (!fn) {
-      ctx._log('pipeline', `Warning: unknown hook "${name}" — skipped`);
+      ctx._log("pipeline", `Warning: unknown hook "${name}" — skipped`);
       continue;
     }
     await fn(ctx);
@@ -788,17 +1159,21 @@ async function runHooks(hookNames, ctx) {
  */
 function _appendCommandResult(ctx, report, isError) {
   if (!ctx.toolResult) {
-    ctx.toolResult = { content: [{ type: 'text', text: report }], isError };
+    ctx.toolResult = { content: [{ type: "text", text: report }], isError };
     return;
   }
 
   // Append to first existing text block, or add a new one.
-  const hasText = ctx.toolResult.content?.some(i => i.type === 'text');
+  const hasText = ctx.toolResult.content?.some((i) => i.type === "text");
   if (!hasText) {
-    ctx.toolResult.content = [...(ctx.toolResult.content || []), { type: 'text', text: report }];
+    ctx.toolResult.content = [
+      ...(ctx.toolResult.content || []),
+      { type: "text", text: report },
+    ];
   } else {
     ctx.toolResult.content = ctx.toolResult.content.map((item, idx) => {
-      if (idx === 0 && item.type === 'text') return { ...item, text: item.text + report };
+      if (idx === 0 && item.type === "text")
+        return { ...item, text: item.text + report };
       return item;
     });
   }
@@ -810,46 +1185,51 @@ function _appendCommandResult(ctx, report, isError) {
  * This makes hook activity visible to MCP clients that do not expose stderr.
  */
 function appendExecutionTrace(result, ctx, hookConfig, status) {
-  const toList = (arr) => (arr && arr.length ? arr.join(', ') : '(none)');
+  const toList = (arr) => (arr && arr.length ? arr.join(", ") : "(none)");
   const logs = ctx.getLogs();
   const startedAt = ctx.requestedAt || new Date().toISOString();
   const lines = [
-    '',
-    '---',
-    '## Hook Execution Trace',
+    "",
+    "---",
+    "## Hook Execution Trace",
     `status: ${status}`,
     `tool: ${ctx.toolName}`,
-    `request_id: ${ctx.requestId || 'n/a'}`,
+    `request_id: ${ctx.requestId || "n/a"}`,
     `started_at: ${startedAt}`,
-    '',
-    'configured_hooks:',
+    "",
+    "configured_hooks:",
     `  before_hook:      ${toList(hookConfig.before_hook)}`,
     `  tool_hook:        ${toList(hookConfig.tool_hook)}`,
     `  after_tool_hook:  ${toList(hookConfig.after_tool_hook)}`,
     `  after_hook:       ${toList(hookConfig.after_hook)}`,
     `  session_end_hook: ${toList(hookConfig.session_end_hook)}`,
-    '',
-    'steps:',
+    "",
+    "steps:",
   ];
 
   if (!logs.length) {
-    lines.push('  1. (no hook logs captured)');
+    lines.push("  1. (no hook logs captured)");
   } else {
     logs.forEach((l, i) => lines.push(`  ${i + 1}. ${l.phase} -> ${l.msg}`));
   }
 
-  const trace = lines.join('\n') + '\n';
-  const safeResult = result || { content: [{ type: 'text', text: '' }] };
-  const hasText = Array.isArray(safeResult.content)
-    && safeResult.content.some(item => item.type === 'text');
+  const trace = lines.join("\n") + "\n";
+  const safeResult = result || { content: [{ type: "text", text: "" }] };
+  const hasText =
+    Array.isArray(safeResult.content) &&
+    safeResult.content.some((item) => item.type === "text");
 
   if (!hasText) {
-    safeResult.content = [...(safeResult.content || []), { type: 'text', text: trace }];
+    safeResult.content = [
+      ...(safeResult.content || []),
+      { type: "text", text: trace },
+    ];
     return safeResult;
   }
 
   safeResult.content = safeResult.content.map((item, idx) => {
-    if (idx === 0 && item.type === 'text') return { ...item, text: (item.text || '') + trace };
+    if (idx === 0 && item.type === "text")
+      return { ...item, text: (item.text || "") + trace };
     return item;
   });
   return safeResult;
@@ -865,14 +1245,20 @@ function appendExecutionTrace(result, ctx, hookConfig, status) {
  * @param {object}   options        — { includeTrace?: boolean }
  * @returns {Promise<object>}         MCP-compatible result object
  */
-async function runPipeline(hookConfig, toolName, args, toolExecutor, options = {}) {
+async function runPipeline(
+  hookConfig,
+  toolName,
+  args,
+  toolExecutor,
+  options = {},
+) {
   const ctx = createContext(toolName, args);
   const includeTrace = !!options.includeTrace;
 
-  if (!hookConfig.after_hook?.includes('add_intent_preamble')) {
+  if (!hookConfig.after_hook?.includes("add_intent_preamble")) {
     hookConfig = {
       ...hookConfig,
-      after_hook: ['add_intent_preamble', ...(hookConfig.after_hook ?? [])],
+      after_hook: ["add_intent_preamble", ...(hookConfig.after_hook ?? [])],
     };
   }
 
@@ -880,10 +1266,18 @@ async function runPipeline(hookConfig, toolName, args, toolExecutor, options = {
   await runHooks(hookConfig.before_hook ?? [], ctx);
   if (ctx._aborted) {
     let result = {
-      content: [{ type: 'text', text: `[before_hook aborted] ${ctx._abortReason}` }],
+      content: [
+        { type: "text", text: `[before_hook aborted] ${ctx._abortReason}` },
+      ],
       isError: true,
     };
-    if (includeTrace) result = appendExecutionTrace(result, ctx, hookConfig, 'aborted@before_hook');
+    if (includeTrace)
+      result = appendExecutionTrace(
+        result,
+        ctx,
+        hookConfig,
+        "aborted@before_hook",
+      );
     return result;
   }
 
@@ -895,10 +1289,18 @@ async function runPipeline(hookConfig, toolName, args, toolExecutor, options = {
   await runHooks(hookConfig.tool_hook ?? [], ctx);
   if (ctx._aborted) {
     let result = {
-      content: [{ type: 'text', text: `[tool_hook aborted] ${ctx._abortReason}` }],
+      content: [
+        { type: "text", text: `[tool_hook aborted] ${ctx._abortReason}` },
+      ],
       isError: true,
     };
-    if (includeTrace) result = appendExecutionTrace(result, ctx, hookConfig, 'aborted@tool_hook');
+    if (includeTrace)
+      result = appendExecutionTrace(
+        result,
+        ctx,
+        hookConfig,
+        "aborted@tool_hook",
+      );
     return result;
   }
 
@@ -919,7 +1321,8 @@ async function runPipeline(hookConfig, toolName, args, toolExecutor, options = {
   await runHooks(hookConfig.session_end_hook ?? [], ctx);
 
   let result = ctx.toolResult;
-  if (includeTrace) result = appendExecutionTrace(result, ctx, hookConfig, 'completed');
+  if (includeTrace)
+    result = appendExecutionTrace(result, ctx, hookConfig, "completed");
   return result;
 }
 
